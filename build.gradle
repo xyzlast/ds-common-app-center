@@ -71,8 +71,11 @@ subprojects {
     dependencies {
         compile "org.slf4j:jcl-over-slf4j:${rootProject.ext.slf4jVersion}"
         compile "org.slf4j:jul-to-slf4j:${rootProject.ext.slf4jVersion}"
-        compile 'org.slf4j:slf4j-api:${rootProject.ext.slf4jVersion}'
+        compile "org.slf4j:slf4j-api:${rootProject.ext.slf4jVersion}"
+
         testCompile "junit:junit:4.11"
+        testCompile "org.springframework:spring-test:${rootProject.ext.springVersion}"
+        testCompile 'org.mockito:mockito-all:1.9.5'
         provided 'org.projectlombok:lombok:0.12.0'
     }
     
@@ -110,7 +113,12 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
         }
     }
 
+    repositories {
+        maven {url = "http://192.168.13.209:8080/nexus/content/repositories/thirdparty/"}
+    }
+
     dependencies {
+        compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
         compile 'mysql:mysql-connector-java:5.1.22'
         compile 'com.jolbox:bonecp:0.7.1.RELEASE'
         compile 'com.google.guava:guava:14.0'
@@ -131,6 +139,7 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
         compile "com.mysema.querydsl:querydsl-jpa:${rootProject.ext.querydslVersion}"
         compile "com.mysema.querydsl:querydsl-sql:${rootProject.ext.querydslVersion}"
         compile "com.mysema.querydsl:querydsl-apt:${rootProject.ext.querydslVersion}"
+
         provided "com.mysema.querydsl:querydsl-apt:${rootProject.ext.querydslVersion}"
     }
 
