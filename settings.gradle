@@ -1,0 +1,3 @@
+rootProject.name = 'commonApp'
+
+include 'domain', 'publicWeb'
