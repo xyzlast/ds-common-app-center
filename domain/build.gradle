@@ -1,7 +1,0 @@
-//repositories {
-//    maven {url : "http://192.168.13.209:8080/nexus/content/repositories/thirdparty"}
-//}
-//
-//dependencies {
-//    compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
-//}

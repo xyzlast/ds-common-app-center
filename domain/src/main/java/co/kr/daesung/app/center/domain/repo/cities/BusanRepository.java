@@ -10,4 +10,5 @@ import co.kr.daesung.app.center.domain.entities.cities.Busan;
  * Busan Repository
  */
 public interface BusanRepository extends BaseCityRepository<Busan> {
+
 }

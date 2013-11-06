@@ -31,7 +31,14 @@ sonarRunner {
     }
 }
 
-configure(allprojects) {
+configurations {
+    all {
+        exclude module: 'commons-logging'
+        exclude module: 'log4j'
+    }
+}
+
+allprojects {
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-maven'
     apply plugin: 'propdeps-idea'
@@ -118,12 +125,15 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
     }
 
     dependencies {
+        compile 'ch.qos.logback:logback-classic:1.0.13'
         compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
         compile 'mysql:mysql-connector-java:5.1.22'
         compile 'com.jolbox:bonecp:0.7.1.RELEASE'
         compile 'com.google.guava:guava:14.0'
 
-        compile "org.springframework:spring-core:${rootProject.ext.springVersion}"
+        compile("org.springframework:spring-core:${rootProject.ext.springVersion}") {
+            exclude(group: 'commons-logging', module: 'commons-logging')
+        }
         compile "org.springframework:spring-orm:${rootProject.ext.springVersion}"
         compile "org.springframework:spring-tx:${rootProject.ext.springVersion}"
         compile "org.springframework:spring-context:${rootProject.ext.springVersion}"
@@ -134,7 +144,14 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
         compile "org.hibernate:hibernate-entitymanager:4.1.10.Final"
         compile "org.hibernate:hibernate-validator:4.3.1.Final"
 
-        compile "org.springframework.data:spring-data-jpa:${rootProject.ext.springDataVersion}"
+        compile("org.springframework.data:spring-data-jpa:${rootProject.ext.springDataVersion}") {
+            exclude(group: 'org.springframework', module: 'spring-core')
+            exclude(group: 'org.springframework', module: 'spring-beans')
+            exclude(group: 'org.springframework', module: 'spring-orm')
+            exclude(group: 'org.springframework', module: 'spring-context')
+            exclude(group: 'org.springframework', module: 'spring-aop')
+            exclude(group: 'org.springframework', module: 'spring-tx')
+        }
         compile "com.mysema.querydsl:querydsl-core:${rootProject.ext.querydslVersion}"
         compile "com.mysema.querydsl:querydsl-jpa:${rootProject.ext.querydslVersion}"
         compile "com.mysema.querydsl:querydsl-sql:${rootProject.ext.querydslVersion}"

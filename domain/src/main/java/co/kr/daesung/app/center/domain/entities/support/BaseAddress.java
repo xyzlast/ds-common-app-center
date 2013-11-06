@@ -23,9 +23,21 @@ public class BaseAddress {
     @Column(length = 25)
     private String buildingControlNumber;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SiGunGu")
     private SiGunGu siGunGu;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "road")
     private Road road;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "EupMyeonDongRi")
     private EupMyeonDongRi eupMyeonDongRi;
+
+    private String postCode;
+    private Integer jibeonMainNumber;
+    private Integer jibeonSubNumber;
+    private Integer buildingMainNumber;
+    private Integer buildingSubNumber;
+    private String buildingName;
+    private String buildingDetailName;
+    private String siGunguBuildingName;
 }
