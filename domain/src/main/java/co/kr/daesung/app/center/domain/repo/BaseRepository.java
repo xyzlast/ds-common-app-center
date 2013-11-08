@@ -1,4 +1,4 @@
-package co.kr.daesung.app.center.domain.repo.address;
+package co.kr.daesung.app.center.domain.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;

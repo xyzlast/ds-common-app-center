@@ -1,6 +1,7 @@
 package co.kr.daesung.app.center.domain.repo.address;
 
 import co.kr.daesung.app.center.domain.entities.address.EupMyeonDongRi;
+import co.kr.daesung.app.center.domain.repo.BaseRepository;
 
 /**
  * Created with IntelliJ IDEA.

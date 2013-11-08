@@ -1,7 +1,7 @@
 package co.kr.daesung.app.center.domain.repo.address.cities;
 
 import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
-import co.kr.daesung.app.center.domain.repo.address.BaseRepository;
+import co.kr.daesung.app.center.domain.repo.BaseRepository;
 
 /**
  * Created with IntelliJ IDEA.
