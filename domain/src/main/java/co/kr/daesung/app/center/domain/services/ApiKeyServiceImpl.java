@@ -97,7 +97,15 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     public boolean removeProgramFrom(ApiKey apiKey, int programId) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        AcceptProgram acceptProgram = acceptProgramRepository.findOne(programId);
+        if(acceptProgram == null ||
+                !acceptProgram.getApiKey().getId().equals(apiKey.getId())) {
+            throw new IllegalArgumentException("Program matched is not found!");
+        } else {
+            acceptProgram.setDeleted(true);
+            acceptProgramRepository.save(acceptProgram);
+        }
+        return true;
     }
 
     @Override
