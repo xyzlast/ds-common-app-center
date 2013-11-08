@@ -5,6 +5,7 @@ import co.kr.daesung.app.center.domain.entities.Road;
 import co.kr.daesung.app.center.domain.entities.SiGunGu;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -18,17 +19,18 @@ import javax.persistence.*;
 @MappedSuperclass
 @Getter
 @Setter
+@ToString
 public class BaseAddress {
     @Id
     @Column(length = 25)
     private String buildingControlNumber;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "SiGunGu")
     private SiGunGu siGunGu;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "road")
     private Road road;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "EupMyeonDongRi")
     private EupMyeonDongRi eupMyeonDongRi;
 

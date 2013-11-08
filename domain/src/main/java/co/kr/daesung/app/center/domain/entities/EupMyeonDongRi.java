@@ -22,12 +22,13 @@ public class EupMyeonDongRi {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "siGunGu")
     private SiGunGu siGunGu;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = true)
     private String beopJungEupMyeonDongName;
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = true)
     private String beopJungRiName;
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = true)
     private String haengJungDongName;
 }

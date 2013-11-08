@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 /**
@@ -18,8 +19,9 @@ import javax.persistence.ManyToOne;
 @Setter
 public class SiGunGu {
     @Id
-    private String sigunguNumber;
+    private String siGunGuNumber;
     @ManyToOne
+    @JoinColumn(name = "SiDo")
     private SiDo sido;
-    private String sigungoName;
+    private String siGunGuName;
 }

@@ -2,11 +2,15 @@ package co.kr.daesung.app.center.domain.configs;
 
 import com.jolbox.bonecp.BoneCPDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -31,6 +35,7 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "co.kr.daesung.app.center.domain.repo")
 @EnableTransactionManagement
 @PropertySource(value = "classpath:db-connect.properties")
+@ComponentScan(basePackages = "co.kr.daesung.app.center.domain.services")
 public class DomainConfiguration {
 
     public static final String HIBERNATE_DIALECT = "hibernate.dialect";
@@ -46,7 +51,6 @@ public class DomainConfiguration {
     public static final String HIBERNATE_CACHE_REGION_FACTORY_CLASS = "hibernate.cache.region.factory_class";
     public static final String HIBERNATE_HBM2DDL_AUTO = "hibernate.hbm2ddl.auto";
 
-
     @Autowired
     private Environment env;
 
@@ -54,6 +58,23 @@ public class DomainConfiguration {
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         PropertySourcesPlaceholderConfigurer configHolder = new PropertySourcesPlaceholderConfigurer();
         return configHolder;
+    }
+
+    @Bean(name = "ehcache")
+    public EhCacheManagerFactoryBean ehCacheManagerFactoryBean() throws Exception {
+        EhCacheManagerFactoryBean bean = new EhCacheManagerFactoryBean();
+        bean.setShared(Boolean.TRUE);
+        bean.setConfigLocation(new ClassPathResource("ehcache.xml"));
+        bean.afterPropertiesSet();
+
+        return bean;
+    }
+
+    @Bean(name = "cacheManager")
+    public EhCacheCacheManager cacheManager() throws Exception {
+        EhCacheCacheManager ehCacheManager = new EhCacheCacheManager();
+        ehCacheManager.setCacheManager(ehCacheManagerFactoryBean().getObject());
+        return ehCacheManager;
     }
 
     @Bean
@@ -106,13 +127,10 @@ public class DomainConfiguration {
         System.out.println("dialect : "+ dialect);
         properties.put(HIBERNATE_DIALECT, env.getProperty(HIBERNATE_DIALECT));
 
-//        if (enableCache) {
-//            properties.put(HIBERNATE_CACHE_REGION_FACTORY_CLASS, EH_CACHE_REGION_FACTORY);
-//            properties.put(HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE, true);
-//            properties.put(HIBERNATE_CACHE_USE_QUERY_CACHE, true);
-//            properties.put("net.sf.ehcache.cacheManagerName", Long.valueOf((new Date()).getTime()).toString());
-//        }
-//
+        properties.put(HIBERNATE_CACHE_REGION_FACTORY_CLASS, EH_CACHE_REGION_FACTORY);
+        properties.put(HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE, true);
+        properties.put(HIBERNATE_CACHE_USE_QUERY_CACHE, true);
+        properties.put("net.sf.ehcache.cacheManagerName", Long.valueOf((new Date()).getTime()).toString());
 
         return properties;
     }

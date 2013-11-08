@@ -144,6 +144,9 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
         compile "org.hibernate:hibernate-entitymanager:4.1.10.Final"
         compile "org.hibernate:hibernate-validator:4.3.1.Final"
 
+        compile 'org.hibernate:hibernate-ehcache:4.2.7.Final'
+        compile 'net.sf.ehcache:ehcache:2.7.4'
+
         compile("org.springframework.data:spring-data-jpa:${rootProject.ext.springDataVersion}") {
             exclude(group: 'org.springframework', module: 'spring-core')
             exclude(group: 'org.springframework', module: 'spring-beans')
