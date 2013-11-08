@@ -1,8 +1,11 @@
 package co.kr.daesung.app.center.domain.services;
 
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
+import co.kr.daesung.app.center.domain.constants.SidoEnum;
 import co.kr.daesung.app.center.domain.entities.EupMyeonDongRi;
+import co.kr.daesung.app.center.domain.entities.Road;
 import co.kr.daesung.app.center.domain.entities.SiDo;
+import co.kr.daesung.app.center.domain.entities.SiGunGu;
 import co.kr.daesung.app.center.domain.entities.support.BaseAddress;
 import org.junit.Test;
 
@@ -58,7 +61,11 @@ public class AddressServiceImplTest {
 
     @Test
     public void testGetSiGunGuList() throws Exception {
-
+        for(SidoEnum sido : SidoEnum.values()) {
+            String sidoNumber = Integer.valueOf(sido.getValue()).toString();
+            final List<SiGunGu> siGunGuList = addressService.getSiGunGuList(sidoNumber);
+            assertThat(siGunGuList.size(), is(not(0)));
+        }
     }
 
     @Test
@@ -71,32 +78,6 @@ public class AddressServiceImplTest {
     }
 
     @Test
-    public void testExtractSearchText() throws Exception {
-        String sample1 = "구로동 245 번지";
-        Matcher matcher1 = extractSearchText(sample1);
-        assertThat(matcher1.find(), is(true));
-        assertThat(matcher1.group(1), is("구로동"));
-        assertThat(matcher1.group(2), is("245"));
-
-        String sample2 = "서초1동";
-        Matcher matcher2 = extractSearchText(sample2);
-        assertThat(matcher2.find(), is(false));
-
-        String sample3 = "잠실동 624";
-        Matcher matcher3 = extractSearchText(sample3);
-        assertThat(matcher3.find(), is(true));
-        assertThat(matcher3.group(1), is("잠실동"));
-        assertThat(matcher3.group(2), is("624"));
-    }
-
-    private Matcher extractSearchText(String searchText) {
-        String regex = "([^-\\s]*)\\s(\\d*)[^\\d]*";
-        Pattern pattern = Pattern.compile(regex);
-        final Matcher matcher = pattern.matcher(searchText);
-        return matcher;
-    }
-
-    @Test
     public void testSearchByJibeon() throws Exception {
         List<BaseAddress> addresses = addressService.searchByJibeon("신도림동", false, 0, 999);
         for(BaseAddress address : addresses) {
@@ -106,22 +87,39 @@ public class AddressServiceImplTest {
 
     @Test
     public void testGetRoadNumbers() throws Exception {
-
+        final List<Road> roads = addressService.getRoadNumbers("역곡");
+        assertThat(roads.size(), is(not(0)));
     }
 
     @Test
     public void testSearchByRoad() throws Exception {
-
-    }
-
-    @Test
-    public void testSearchAddressBySiDoSiGunGuRoadList() throws Exception {
-
+        String roadName1 = "지봉로 1";
+        final List<BaseAddress> baseAddresses1 = addressService.searchByRoad("11", roadName1, true, 0, Integer.MAX_VALUE);
+        assertThat(baseAddresses1.size(), is(not(0)));
     }
 
     @Test
     public void testSearchByBuilding() throws Exception {
+        String buildingName = "레미안";
+        SidoEnum sido = SidoEnum.SEOUL;
+        String sidoNumber = Integer.valueOf(sido.getValue()).toString();
+        final List<BaseAddress> baseAddresses = addressService.searchByBuilding(sidoNumber, buildingName, 0, 999);
+        assertThat(baseAddresses.size(), is(not(0)));
+        for(BaseAddress address : baseAddresses) {
+            assertThat(address.getBuildingName().contains(buildingName), is(true));
+            System.out.println(address);
+        }
+    }
 
+    @Test
+    public void testSearchByBuilding2() throws Exception {
+        String buildingName = "레미안";
+        final List<BaseAddress> baseAddresses = addressService.searchByBuilding(buildingName);
+        assertThat(baseAddresses.size(), is(not(0)));
+        for(BaseAddress address : baseAddresses) {
+            assertThat(address.getBuildingName().contains(buildingName), is(true));
+            System.out.println(address);
+        }
     }
 
     @Test
