@@ -110,7 +110,22 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     public boolean isAcceptedKey(ApiKey apiKey, String program) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
+        Predicate predicate = qAcceptProgram.apiKey.eq(apiKey)
+                .and(qAcceptProgram.apiKey.deleted.isFalse())
+                .and(qAcceptProgram.program.eq(program))
+                .and(qAcceptProgram.deleted.isFalse());
+        return acceptProgramRepository.count(predicate) != 0;
+    }
+
+    @Override
+    public boolean isAcceptedKey(String apiKeyId, String program) {
+        ApiKey apiKey = apiKeyRepository.findOne(apiKeyId);
+        if(apiKey == null || apiKey.isDeleted()) {
+            return false;
+        } else {
+            return isAcceptedKey(apiKey, program);
+        }
     }
 
     @Override

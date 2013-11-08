@@ -22,6 +22,7 @@ public interface ApiKeyService {
     boolean removeProgramFrom(ApiKey apiKey, String programName);
     boolean removeProgramFrom(ApiKey apiKey, int programId);
     boolean isAcceptedKey(ApiKey apiKey, String program);
+    boolean isAcceptedKey(String apiKeyId, String program);
 
     Page<ApiKey> getTopUsedApiKeys(int pageIndex, int pageSize);
     Page<AcceptProgram> getTopUsedPrograms(int pageIndex, int pageSize);
