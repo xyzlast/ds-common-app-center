@@ -1,10 +1,10 @@
 package co.kr.daesung.app.center.domain.services;
 
-import co.kr.daesung.app.center.domain.entities.EupMyeonDongRi;
-import co.kr.daesung.app.center.domain.entities.Road;
-import co.kr.daesung.app.center.domain.entities.SiDo;
-import co.kr.daesung.app.center.domain.entities.SiGunGu;
-import co.kr.daesung.app.center.domain.entities.support.BaseAddress;
+import co.kr.daesung.app.center.domain.entities.address.EupMyeonDongRi;
+import co.kr.daesung.app.center.domain.entities.address.Road;
+import co.kr.daesung.app.center.domain.entities.address.SiDo;
+import co.kr.daesung.app.center.domain.entities.address.SiGunGu;
+import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
 
 import java.util.List;
 

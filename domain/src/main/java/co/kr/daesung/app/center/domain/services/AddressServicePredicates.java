@@ -1,8 +1,8 @@
 package co.kr.daesung.app.center.domain.services;
 
 import co.kr.daesung.app.center.domain.constants.SidoEnum;
-import co.kr.daesung.app.center.domain.entities.Road;
-import co.kr.daesung.app.center.domain.entities.cities.*;
+import co.kr.daesung.app.center.domain.entities.address.Road;
+import co.kr.daesung.app.center.domain.entities.address.cities.*;
 import com.mysema.query.types.Predicate;
 
 import java.util.List;

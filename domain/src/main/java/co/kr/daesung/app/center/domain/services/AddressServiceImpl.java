@@ -1,20 +1,22 @@
 package co.kr.daesung.app.center.domain.services;
 
 import co.kr.daesung.app.center.domain.constants.SidoEnum;
-import co.kr.daesung.app.center.domain.entities.*;
-import co.kr.daesung.app.center.domain.entities.cities.*;
-import co.kr.daesung.app.center.domain.entities.support.BaseAddress;
-import co.kr.daesung.app.center.domain.entities.support.QBaseAddress;
-import co.kr.daesung.app.center.domain.repo.EupMyeonDongRiRepository;
-import co.kr.daesung.app.center.domain.repo.RoadRepository;
-import co.kr.daesung.app.center.domain.repo.SiDoRepository;
-import co.kr.daesung.app.center.domain.repo.SiGunGuRepository;
-import co.kr.daesung.app.center.domain.repo.cities.*;
+import co.kr.daesung.app.center.domain.entities.address.*;
+import co.kr.daesung.app.center.domain.entities.address.EupMyeonDongRi;
+import co.kr.daesung.app.center.domain.entities.address.Road;
+import co.kr.daesung.app.center.domain.entities.address.SiDo;
+import co.kr.daesung.app.center.domain.entities.address.SiGunGu;
+import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
+import co.kr.daesung.app.center.domain.entities.address.support.QBaseAddress;
+import co.kr.daesung.app.center.domain.repo.address.EupMyeonDongRiRepository;
+import co.kr.daesung.app.center.domain.repo.address.RoadRepository;
+import co.kr.daesung.app.center.domain.repo.address.SiDoRepository;
+import co.kr.daesung.app.center.domain.repo.address.SiGunGuRepository;
+import co.kr.daesung.app.center.domain.repo.address.cities.*;
 import co.kr.daesung.app.center.domain.utils.ArrayUtil;
 import co.kr.daesung.app.center.domain.utils.RegexResultForSearchText;
 import co.kr.daesung.app.center.domain.utils.SearchTextRegex;
 import com.mysema.query.types.Predicate;
-import com.mysema.query.types.path.EntityPathBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -24,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.

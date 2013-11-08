@@ -2,11 +2,11 @@ package co.kr.daesung.app.center.domain.services;
 
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import co.kr.daesung.app.center.domain.constants.SidoEnum;
-import co.kr.daesung.app.center.domain.entities.EupMyeonDongRi;
-import co.kr.daesung.app.center.domain.entities.Road;
-import co.kr.daesung.app.center.domain.entities.SiDo;
-import co.kr.daesung.app.center.domain.entities.SiGunGu;
-import co.kr.daesung.app.center.domain.entities.support.BaseAddress;
+import co.kr.daesung.app.center.domain.entities.address.EupMyeonDongRi;
+import co.kr.daesung.app.center.domain.entities.address.Road;
+import co.kr.daesung.app.center.domain.entities.address.SiDo;
+import co.kr.daesung.app.center.domain.entities.address.SiGunGu;
+import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
 import org.junit.Test;
 
 /**
@@ -27,19 +27,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
