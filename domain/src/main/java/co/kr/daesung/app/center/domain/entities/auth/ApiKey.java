@@ -2,6 +2,8 @@ package co.kr.daesung.app.center.domain.entities.auth;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,18 +23,20 @@ import java.util.List;
 @Setter
 public class ApiKey {
     @Id
-    @GeneratedValue(generator = "msGuid")
-    @Column(length = 32)
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+    @GeneratedValue(generator = "generator")
+    @Column(length = 32, columnDefinition="uniqueidentifier")
     private String id;
 
     @Column(name="userId", length = 20)
     private String userId;
 
     private Date createTime;
+    @Column(name = "Deleted", nullable = false)
     private boolean deleted;
     private long usedCount;
 
-    @OneToMany(mappedBy = "apiKey")
+    @OneToMany(mappedBy = "apiKey", cascade = { CascadeType.ALL })
     private List<AcceptProgram> acceptPrograms = new ArrayList<>();
 
     @PrePersist
@@ -40,5 +44,12 @@ public class ApiKey {
         createTime = new Date();
         deleted = false;
         usedCount = 0L;
+    }
+
+    public void addProgram(String programName, String description) {
+        AcceptProgram acceptProgram = new AcceptProgram();
+        acceptProgram.setProgram(programName);
+        acceptProgram.setDescription(description);
+        acceptPrograms.add(acceptProgram);
     }
 }

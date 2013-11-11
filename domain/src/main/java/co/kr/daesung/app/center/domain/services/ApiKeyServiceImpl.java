@@ -10,8 +10,11 @@ import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,6 +32,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private AcceptProgramRepository acceptProgramRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ApiKey> getApiKeys(String userId, int pageIndex, int pageSize) {
         QApiKey qApiKey = QApiKey.apiKey;
         Predicate predicate = qApiKey.userId.eq(userId);
@@ -46,6 +50,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ApiKey getApiKey(String id) {
         return apiKeyRepository.findOne(id);
     }
@@ -109,16 +114,25 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
+    @Transactional
     public boolean isAcceptedKey(ApiKey apiKey, String program) {
         QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
         Predicate predicate = qAcceptProgram.apiKey.eq(apiKey)
                 .and(qAcceptProgram.apiKey.deleted.isFalse())
                 .and(qAcceptProgram.program.eq(program))
                 .and(qAcceptProgram.deleted.isFalse());
-        return acceptProgramRepository.count(predicate) != 0;
+
+        boolean isAccepted = acceptProgramRepository.count(predicate) == 1;
+        if(isAccepted) {
+            AcceptProgram acceptProgram = acceptProgramRepository.findOne(predicate);
+            acceptProgram.increaseCallTime();
+            acceptProgramRepository.save(acceptProgram);
+        }
+        return isAccepted;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isAcceptedKey(String apiKeyId, String program) {
         ApiKey apiKey = apiKeyRepository.findOne(apiKeyId);
         if(apiKey == null || apiKey.isDeleted()) {
@@ -129,12 +143,16 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ApiKey> getTopUsedApiKeys(int pageIndex, int pageSize) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        PageRequest pageRequest = new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.DESC, "usedCount"));
+        return apiKeyRepository.findAll(pageRequest);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<AcceptProgram> getTopUsedPrograms(int pageIndex, int pageSize) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        PageRequest pageRequest = new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.DESC, "usedCount"));
+        return acceptProgramRepository.findAll(pageRequest);
     }
 }

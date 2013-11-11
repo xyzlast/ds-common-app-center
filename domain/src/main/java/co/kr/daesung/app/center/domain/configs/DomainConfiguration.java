@@ -123,10 +123,7 @@ public class DomainConfiguration {
     protected Properties getHibernateProperties() {
         Properties properties = new Properties();
         Assert.notNull(env);
-        String dialect = env.getProperty(HIBERNATE_DIALECT);
-        System.out.println("dialect : "+ dialect);
         properties.put(HIBERNATE_DIALECT, env.getProperty(HIBERNATE_DIALECT));
-
         properties.put(HIBERNATE_CACHE_REGION_FACTORY_CLASS, EH_CACHE_REGION_FACTORY);
         properties.put(HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE, true);
         properties.put(HIBERNATE_CACHE_USE_QUERY_CACHE, true);

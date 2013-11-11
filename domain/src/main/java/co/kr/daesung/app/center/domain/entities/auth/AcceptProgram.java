@@ -2,7 +2,6 @@ package co.kr.daesung.app.center.domain.entities.auth;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,10 +20,11 @@ import java.util.Date;
 public class AcceptProgram {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
-    @OneToMany
-    @JoinColumn(name = "apiKey")
+    @ManyToOne
+    @JoinColumn(name = "apiKeyId")
     private ApiKey apiKey;
 
     private String program;
@@ -34,8 +34,15 @@ public class AcceptProgram {
     private Date createTime;
     private Date lastCallTime;
 
+    @PrePersist
+    public void initValues() {
+        createTime = new Date();
+        lastCallTime = new Date();
+    }
+
     public void increaseCallTime() {
         usedCount++;
+        apiKey.setUsedCount(apiKey.getUsedCount() + 1L);
         lastCallTime = new Date();
     }
 }
