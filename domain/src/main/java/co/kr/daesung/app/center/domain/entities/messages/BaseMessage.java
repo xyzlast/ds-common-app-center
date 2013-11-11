@@ -1,5 +1,6 @@
-package co.kr.daesung.app.center.domain.entities.board;
+package co.kr.daesung.app.center.domain.entities.messages;
 
+import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,26 +11,26 @@ import java.util.Date;
  * Created with IntelliJ IDEA.
  * User: ykyoon
  * Date: 11/11/13
- * Time: 11:03 AM
+ * Time: 2:42 PM
  * To change this template use File | Settings | File Templates.
  */
-@Entity
-@Table(name = "Notice")
+@MappedSuperclass
 @Getter
 @Setter
-public class Notice {
+public abstract class BaseMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(name = "isTop")
-    private boolean top;
-    private String title;
-    @Column(columnDefinition = "text")
-    private String content;
+
+    @ManyToOne
+    @JoinColumn(name="apiKey")
+    private ApiKey apiKey;
+
+    private boolean duplicated;
+    private boolean sent;
+
     private Date createTime;
-    @Column(name = "WriterId")
-    private String writer;
-    private boolean deleted;
+    private Date sentTime;
 
     @PrePersist
     public void initValues() {

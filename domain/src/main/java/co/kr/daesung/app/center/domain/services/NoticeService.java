@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
  * To change this template use File | Settings | File Templates.
  */
 public interface NoticeService {
-    int getNoticeCount();
+    long getNoticeCount(boolean includeDeleted);
     Page<Notice> getNotices(int pageIndex, int pageSize, boolean includeDelete);
     Notice getNotice(int id);
     Notice write(String userId, String title, String content, boolean isTop);
