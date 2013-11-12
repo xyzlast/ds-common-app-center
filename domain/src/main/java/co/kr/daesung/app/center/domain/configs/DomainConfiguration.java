@@ -2,6 +2,7 @@ package co.kr.daesung.app.center.domain.configs;
 
 import com.jolbox.bonecp.BoneCPDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -84,6 +86,25 @@ public class DomainConfiguration {
         dataSource.setPassword(env.getProperty(CONNECT_PASSWORD));
         dataSource.setDriverClass(env.getProperty(CONNECT_DRIVER));
         dataSource.setJdbcUrl(env.getProperty(CONNECT_URL));
+        dataSource.setMaxConnectionsPerPartition(10);
+        dataSource.setMinConnectionsPerPartition(5);
+
+        return dataSource;
+    }
+
+    @Bean
+    public JdbcTemplate nleaderJdbcTemplate() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(nleaderDataSource());
+        return jdbcTemplate;
+    }
+
+    @Bean(name = "nleaderDataSource")
+    public DataSource nleaderDataSource() {
+        BoneCPDataSource dataSource = new BoneCPDataSource();
+        dataSource.setUsername(env.getProperty("message.nleader.username"));
+        dataSource.setPassword(env.getProperty("message.nleader.password"));
+        dataSource.setDriverClass(env.getProperty("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
+        dataSource.setJdbcUrl(env.getProperty("message.nleader.url"));
         dataSource.setMaxConnectionsPerPartition(10);
         dataSource.setMinConnectionsPerPartition(5);
 

@@ -23,10 +23,12 @@ public abstract class BaseMessage {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name="apiKey")
+    @JoinColumn(name="apiKeyId")
     private ApiKey apiKey;
 
+    @Column(name = "IsDuplicated")
     private boolean duplicated;
+    @Column(name = "IsSent")
     private boolean sent;
 
     private Date createTime;
