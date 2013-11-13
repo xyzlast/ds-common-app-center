@@ -40,6 +40,8 @@ public class MessageSenderImpl implements MessageSender {
     private String crewMessageServerIp;
     @Value("${message.crew.server.port}")
     private int crewMessageServerPort;
+    @Value("${message.crew.sleep}")
+    private int crewMessageSleepTime;
 
 
     private static final String SELECT_USER_QUERY = "SELECT USERNUM, NAME FROM WBUSER WHERE USERID = ?";
@@ -56,6 +58,7 @@ public class MessageSenderImpl implements MessageSender {
     @Override
     public int sendCrewMessages(List<CrewMessage> crewMessages) {
         int itemCount = 0;
+        Date sentTime = new Date();
         try {
             Socket socket = new Socket(crewMessageServerIp, crewMessageServerPort);
             OutputStream outputStream = socket.getOutputStream();
@@ -63,8 +66,10 @@ public class MessageSenderImpl implements MessageSender {
                 try {
                     outputStream.write(crewMessage.convertToBytesData());
                     crewMessage.setSent(true);
+                    crewMessage.setSentTime(sentTime);
                     itemCount++;
-                } catch(IOException ex) {
+                    Thread.sleep(crewMessageSleepTime);
+                } catch(IOException | InterruptedException ex) {
                     log.error("socket send exception", ex);
                 }
             }
@@ -80,6 +85,7 @@ public class MessageSenderImpl implements MessageSender {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date sentTime = new Date();
         String timeString = dateFormat.format(c.getTime());
 
         int sentCount = 0;
@@ -112,6 +118,7 @@ public class MessageSenderImpl implements MessageSender {
                                 NLEADER_MESSAGE_HEADER
                         });
                 message.setSent(true);
+                message.setSentTime(sentTime);
                 sentCount++;
             } catch(Exception ex) {
                 log.error("NLeader DB error : ", ex);

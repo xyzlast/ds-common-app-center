@@ -3,6 +3,7 @@ package co.kr.daesung.app.center.domain.services;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
 import co.kr.daesung.app.center.domain.entities.messages.CrewMessage;
+import co.kr.daesung.app.center.domain.entities.messages.NLeaderMessage;
 import org.junit.Test;
 
 /**
@@ -20,8 +21,11 @@ import static org.junit.Assert.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -44,6 +48,8 @@ public class MessageServiceImplTest {
 
     private static final String TO_USER_ID = "201105010";
     private static final String FROM_USER_ID = "201105010";
+//    private static final String TO_USER_ID = "201210107";
+//    private static final String FROM_USER_ID = "201210107";
     private String apiId;
 
     @Before
@@ -88,32 +94,86 @@ public class MessageServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testSendCrewMessagesFromQueue() throws Exception {
+        messageService.makeAllToSent();
 
+        testAddCrewMessageToQueue();
+        testAddCrewMessageToQueue();
+        int itemCount = messageService.sendCrewMessagesFromQueue();
+        assertThat(itemCount, is(4));
     }
 
     @Test
     public void testGetCrewMessages1() throws Exception {
-
+        final Page<CrewMessage> crewMessages = messageService.getCrewMessages(0, 100);
+        assertThat(crewMessages.getNumber(), is(0));
     }
 
     @Test
     public void testGetCrewMessages2() throws Exception {
-
+        final Page<CrewMessage> crewMessages = messageService.getCrewMessages(apiId, 0, 100);
+        assertThat(crewMessages.getNumber(), is(0));
     }
 
     @Test
+    @Rollback(false)
     public void testAddNLeaderMessageToQueue() throws Exception {
+        final NLeaderMessage nLeaderMessage = messageService.addNLeaderMessageToQueue(apiId, FROM_USER_ID, TO_USER_ID, "TITLE", "CONTENT", true);
+        assertThat(nLeaderMessage, is(not(nullValue())));
+        assertThat(nLeaderMessage.getId(), is(not(0)));
 
+        final NLeaderMessage nLeaderMessage2 = messageService.addNLeaderMessageToQueue(apiId, FROM_USER_ID, TO_USER_ID, "TITLE", "CONTENT", false);
+        assertThat(nLeaderMessage2, is(not(nullValue())));
+        assertThat(nLeaderMessage2.getId(), is(not(0)));
+        assertThat(nLeaderMessage2.isDuplicated(), is(true));
+
+        final NLeaderMessage nLeaderMessage3 = messageService.addNLeaderMessageToQueue(apiId, FROM_USER_ID, TO_USER_ID, "TITLE", "CONTENT", true);
+        assertThat(nLeaderMessage3, is(not(nullValue())));
+        assertThat(nLeaderMessage3.getId(), is(not(0)));
+        assertThat(nLeaderMessage3.isDuplicated(), is(false));
+
+        messageService.makeAllToSent();
     }
 
     @Test
     public void testGetNLeaderMessagesInQueue() throws Exception {
+        messageService.makeAllToSent();
+        final List<NLeaderMessage> nLeaderMessagesInQueue = messageService.getNLeaderMessagesInQueue(true);
+        assertThat(nLeaderMessagesInQueue.size(), is(0));
 
+        final NLeaderMessage nLeaderMessage = messageService.addNLeaderMessageToQueue(apiId, FROM_USER_ID, TO_USER_ID, "TITLE", "CONTENT", true);
+        assertThat(nLeaderMessage, is(not(nullValue())));
+        assertThat(nLeaderMessage.getId(), is(not(0)));
+        messageService.makeAllToSent();
     }
 
     @Test
-    public void testSendNLeaderMessagesFromQueue() throws Exception {
+    public void testMakeSentToAll() throws Exception {
+        messageService.makeAllToSent();
+        final List<NLeaderMessage> nLeaderMessagesInQueue = messageService.getNLeaderMessagesInQueue(true);
+        assertThat(nLeaderMessagesInQueue.size(), is(0));
 
+        final NLeaderMessage nLeaderMessage = messageService.addNLeaderMessageToQueue(apiId, FROM_USER_ID, TO_USER_ID, "TITLE", "CONTENT", true);
+        assertThat(nLeaderMessage, is(not(nullValue())));
+        assertThat(nLeaderMessage.getId(), is(not(0)));
+
+        final NLeaderMessage nLeaderMessage2 = messageService.addNLeaderMessageToQueue(apiId, FROM_USER_ID, TO_USER_ID, "TITLE", "CONTENT", true);
+        assertThat(nLeaderMessage2, is(not(nullValue())));
+        assertThat(nLeaderMessage2.getId(), is(not(0)));
+        assertThat(nLeaderMessage2.isDuplicated(), is(false));
+
+        final NLeaderMessage nLeaderMessage3 = messageService.addNLeaderMessageToQueue(apiId, FROM_USER_ID, TO_USER_ID, "TITLE", "CONTENT", true);
+        assertThat(nLeaderMessage3, is(not(nullValue())));
+        assertThat(nLeaderMessage3.getId(), is(not(0)));
+        assertThat(nLeaderMessage3.isDuplicated(), is(false));
+
+
+        final List<NLeaderMessage> nLeaderMessagesInQueue2 = messageService.getNLeaderMessagesInQueue(true);
+        assertThat(nLeaderMessagesInQueue2.size(), is(3));
+        messageService.makeAllToSent();
+
+        final List<NLeaderMessage> nLeaderMessagesInQueue3 = messageService.getNLeaderMessagesInQueue(true);
+        assertThat(nLeaderMessagesInQueue3.size(), is(0));
     }
 }

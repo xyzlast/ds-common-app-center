@@ -27,4 +27,5 @@ public interface MessageService {
     List<NLeaderMessage> getNLeaderMessagesInQueue(boolean includeDuplicated);
     int sendNLeaderMessagesFromQueue();
 
+    long makeAllToSent();
 }

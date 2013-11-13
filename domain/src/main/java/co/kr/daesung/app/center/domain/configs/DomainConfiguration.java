@@ -37,7 +37,7 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "co.kr.daesung.app.center.domain.repo")
 @EnableTransactionManagement
 @PropertySource(value = "classpath:db-connect.properties")
-@ComponentScan(basePackages = "co.kr.daesung.app.center.domain.services")
+@ComponentScan(basePackages = { "co.kr.daesung.app.center.domain.services", "co.kr.daesung.app.center.domain.repo" })
 public class DomainConfiguration {
 
     public static final String HIBERNATE_DIALECT = "hibernate.dialect";
