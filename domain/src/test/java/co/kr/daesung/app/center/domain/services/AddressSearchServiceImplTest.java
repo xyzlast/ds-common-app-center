@@ -33,9 +33,9 @@ import java.util.List;
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DomainConfiguration.class })
-public class AddressServiceImplTest {
+public class AddressSearchServiceImplTest {
     @Autowired
-    private AddressService addressService;
+    private AddressSearchService addressService;
 
     @Before
     public void setUp() {

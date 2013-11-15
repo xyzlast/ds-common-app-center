@@ -30,13 +30,13 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "co.kr.daesung.app.center.domain.repo")
 @PropertySource(value = "classpath:db-connect.properties")
 @ComponentScan(basePackages = { "co.kr.daesung.app.center.domain.services", "co.kr.daesung.app.center.domain.repo" })
-@EnableOrm(enableCache = false,
+@EnableOrm(enableCache = true,
         framework = OrmFramework.JPA,
         hbmToDdl = HbmToDdl.NO_ACTION,
         packagesToScan = {"co.kr.daesung.app.center.domain.entities"},
         showSql = false)
-@EnableCaching
-public class DomainConfiguration extends AbstractEhCacheConfigurer {
+// @EnableCaching
+public class DomainConfiguration {
     @Autowired
     private Environment env;
 

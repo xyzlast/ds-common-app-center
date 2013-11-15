@@ -15,7 +15,7 @@ import java.util.List;
  * Time: 4:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface AddressService {
+public interface AddressSearchService {
     List<SiDo> getSiDoList();
     List<SiGunGu> getSiGunGuList(String sidoNumber);
 
@@ -35,11 +35,4 @@ public interface AddressService {
     // 시도, 시군구, 검색된 건물명에 대한 주소(추가)
     List<BaseAddress> searchByBuilding(String buildingName);
     List<BaseAddress> searchByBuilding(String sidoNumber, String buildingName, int pageIndex, int pageSize);
-
-
-    boolean clearAllAddresses();
-    // 행정안전부에서 매월 제공하는 대표지번 파일을 이용하여 데이터베이스에 Insert, 시/도, 읍면동, 길
-    boolean insertBaseDataFromFile(String fileFullName, String encoding);
-    // 행정안전부에서 매월 제공하는 대표지번 파일을 이용하여 데이터베이스에 Insert, 각 Address. 반드시 insertBaseDataFromFile 후, 처리되어야지 됨 - Transaction 문제로 인하여 두개로 처리
-    boolean insertAddressFromFile(String fileFullName, String encoding);
 }

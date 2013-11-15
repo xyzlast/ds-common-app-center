@@ -18,13 +18,22 @@ import co.kr.daesung.app.center.domain.utils.ArrayUtil;
 import co.kr.daesung.app.center.domain.utils.RegexResultForSearchText;
 import co.kr.daesung.app.center.domain.utils.SearchTextRegex;
 import com.mysema.query.types.Predicate;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.support.Querydsl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +47,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class AddressServiceImpl implements AddressService {
+public class AddressSearchServiceImpl implements AddressSearchService {
     @Autowired
     private SiDoRepository siDoRepository;
     @Autowired
@@ -223,245 +232,6 @@ public class AddressServiceImpl implements AddressService {
         PageRequest pageRequest = new PageRequest(pageIndex, pageSize);
         Predicate predicate = AddressServicePredicates.getPredicateForSearchByBuilding(sidoNumber, buildingName);
         return ArrayUtil.convertTo(repository.findAll(predicate, pageRequest));
-    }
-
-    @Override
-    public boolean clearAllAddresses() {
-        busanRepository.deleteAllInBatch();
-        chungcheongBukdoRepository.deleteAllInBatch();
-        chungcheongNamdoRepository.deleteAllInBatch();
-        daeguRepository.deleteAllInBatch();
-        daejeonRepository.deleteAllInBatch();
-        gangwondoRepository.deleteAllInBatch();
-        gyeonggidoRepository.deleteAllInBatch();
-        gyeongsangBukdoRepository.deleteAllInBatch();
-        gyeongsangNamdoRepository.deleteAllInBatch();
-        incheonRepository.deleteAllInBatch();
-        jejudoRepository.deleteAllInBatch();
-        jeollaBukdoRepository.deleteAllInBatch();
-        jeollaNamdoRepository.deleteAllInBatch();
-        sejongRepository.deleteAllInBatch();
-        seoulRepository.deleteAllInBatch();
-        ulsanRepository.deleteAllInBatch();
-        eupMyeonDongRiRepository.deleteAllInBatch();
-        siGunGuRepository.deleteAllInBatch();
-        siDoRepository.deleteAllInBatch();
-        return true;
-    }
-
-    @Override
-    public boolean insertAddressFromFile(String fileFullName, String encoding) {
-        try {
-            BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(fileFullName), encoding));
-            String line;
-            int count = 0;
-            SiDo sido = null;
-            SiGunGu siGunGu = null;
-            Road road = null;
-            EupMyeonDongRi eup = null;
-            List<BaseAddress> addresses = new ArrayList<>();
-            BaseCityRepository repo = null;
-            String sidoNumber = null;
-            while((line = bf.readLine()) != null) {
-                String[] items = line.split("\\|");
-                sidoNumber = items[8].substring(0, 2);
-                String sigunguNumber = items[8].substring(0, 5);
-                String roadNumber = items[8].substring(5, 12);
-                String buildingControlNumber = items[15];
-
-                if(count == 0) {
-                    sido = siDoRepository.findOne(sidoNumber);
-                }
-                if(siGunGu == null || !siGunGu.getSiGunGuNumber().equals(sigunguNumber)) {
-                    siGunGu = siGunGuRepository.findOne(sigunguNumber);
-                }
-                if(road == null || !road.getRoadNumber().equals(roadNumber)) {
-                    road = roadRepository.findOne(roadNumber);
-                }
-
-                if(eup == null || !(eup.getBeopJungRiName().equals(items[4]) &&
-                        eup.getBeopJungEupMyeonDongName().equals(items[3]) &&
-                        eup.getHaengJungDongName().equals(items[18])) ) {
-                    QEupMyeonDongRi qEupMyeonDongRi = QEupMyeonDongRi.eupMyeonDongRi;
-                    Predicate eupPredicate = qEupMyeonDongRi.beopJungRiName.eq(items[4])
-                            .and(qEupMyeonDongRi.beopJungEupMyeonDongName.eq(items[3]))
-                            .and(qEupMyeonDongRi.haengJungDongName.eq(items[18]));
-                    eup = eupMyeonDongRiRepository.findOne(eupPredicate);
-                }
-
-                if(sido == null || siGunGu == null || road == null || eup == null) {
-                    throw new IllegalArgumentException("Base data is not found!!");
-                }
-
-                BaseAddress address = getBaseCityInstance(sidoNumber);
-                address.setBuildingControlNumber(buildingControlNumber);
-                address.setSiGunGu(siGunGu);
-                address.setRoad(road);
-                address.setEupMyeonDongRi(eup);
-                address.setJibeonMainNumber(getIntValue(items[6]));
-                address.setJibeonSubNumber(getIntValue(items[7]));
-                address.setBuildingMainNumber(getIntValue(items[11]));
-                address.setBuildingSubNumber(getIntValue(items[12]));
-                address.setBuildingName(items[13]);
-                address.setPostCode(items[19]);
-                address.setSiGunguBuildingName(items[25]);
-                addresses.add(address);
-
-                count++;
-                if((count % 100) == 0) {
-                    System.out.print(".");
-                    repo = getBaseCityRepository(sidoNumber);
-                    repo.save(addresses);
-                    addresses = new ArrayList<>();
-                }
-            }
-            if(sidoNumber != null) {
-                repo = getBaseCityRepository(sidoNumber);
-                repo.save(addresses);
-            }
-            bf.close();
-            System.out.println("");
-            return true;
-        } catch(Exception ex) {
-            return false;
-        }
-    }
-
-    private Integer getIntValue(String item) {
-        if(item == null || item.equals("")) {
-            return null;
-        } else {
-            return Integer.parseInt(item);
-        }
-    }
-
-    private BaseAddress getBaseCityInstance(String sidoNumber) {
-        BaseAddress address = null;
-
-        switch (sidoNumber)
-        {
-            case "11":
-                address = new Seoul();
-                break;
-            case "26":
-                address = new Busan();
-                break;
-            case "27":
-                address = new Daegu();
-                break;
-            case "28":
-                address = new Incheon();
-                break;
-            case "29":
-                address = new Gwangju();
-                break;
-            case "30":
-                address = new Daejeon();
-                break;
-            case "31":
-                address = new Ulsan();
-                break;
-            case "36":
-                address = new Sejong();
-                break;
-            case "41":
-                address = new Gyeonggido();
-                break;
-            case "42":
-                address = new Gangwondo();
-                break;
-            case "43":
-                address = new ChungcheongBukdo();
-                break;
-            case "44":
-                address = new ChungcheongNamdo();
-                break;
-            case "45":
-                address = new JeollaBukdo();
-                break;
-            case "46":
-                address = new JeollaNamdo();
-                break;
-            case "47":
-                address = new GyeongsangBukdo();
-                break;
-            case "48":
-                address = new GyeongsangNamdo();
-                break;
-            case "50":
-                address = new Jejudo();
-                break;
-        }
-        return address;
-    }
-
-
-    @Override
-    public boolean insertBaseDataFromFile(String fileFullName, String encoding) {
-        try {
-            BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(fileFullName), encoding));
-            String line;
-            int count = 0;
-            SiDo sido = null;
-
-            while((line = bf.readLine()) != null) {
-                String[] items = line.split("\\|");
-                String sidoNumber = items[8].substring(0, 2);
-                String sigunguNumber = items[8].substring(0, 5);
-                String roadNumber = items[8].substring(5, 12);
-
-                if(count == 0) {
-                    QSiDo qSido = QSiDo.siDo;
-                    sido = siDoRepository.findOne(qSido.sidoName.eq(items[1]));
-                    if(sido == null) {
-                        sido = new SiDo();
-                        sido.setSidoNumber(sidoNumber);
-                        sido.setSidoName(items[1]);
-                        sido.setSidoTableName("table_name");
-                        siDoRepository.saveAndFlush(sido);
-                    }
-                }
-
-                if(!siGunGuRepository.exists(sigunguNumber)) {
-                    SiGunGu siGunGu = new SiGunGu();
-                    siGunGu.setSiGunGuNumber(sigunguNumber);
-                    siGunGu.setSido(sido);
-                    siGunGu.setSiGunGuName(items[2]);
-                    siGunGuRepository.saveAndFlush(siGunGu);
-                }
-
-                if(!roadRepository.exists(roadNumber)) {
-                    Road road = new Road();
-                    road.setRoadNumber(roadNumber);
-                    road.setRoadName(items[9]);
-                    roadRepository.saveAndFlush(road);
-                }
-
-                QEupMyeonDongRi qEupMyeonDongRi = QEupMyeonDongRi.eupMyeonDongRi;
-                Predicate eupPredicate = qEupMyeonDongRi.beopJungRiName.eq(items[4])
-                        .and(qEupMyeonDongRi.beopJungEupMyeonDongName.eq(items[3]))
-                        .and(qEupMyeonDongRi.haengJungDongName.eq(items[18]));
-                EupMyeonDongRi eupMyeonDongRi = eupMyeonDongRiRepository.findOne(eupPredicate);
-                if(eupMyeonDongRi == null) {
-                    EupMyeonDongRi eup = new EupMyeonDongRi();
-                    eup.setSiGunGu(siGunGuRepository.findOne(sigunguNumber));
-                    eup.setBeopJungEupMyeonDongName(items[3]);
-                    eup.setBeopJungRiName(items[4]);
-                    eup.setHaengJungDongName(items[18]);
-                    eupMyeonDongRiRepository.save(eup);
-                }
-                count++;
-                if((count % 100) == 0) {
-                    System.out.print(".");
-                }
-            }
-            bf.close();
-            System.out.println("");
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     private List<BaseAddress> mergeAddresses(List<BaseAddress> inputAddresses) {
