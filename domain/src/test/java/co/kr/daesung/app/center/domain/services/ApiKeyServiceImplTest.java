@@ -6,6 +6,7 @@ import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
 import co.kr.daesung.app.center.domain.entities.auth.QAcceptProgram;
 import co.kr.daesung.app.center.domain.repo.auth.AcceptProgramRepository;
 import com.mysema.query.types.Predicate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,17 +44,17 @@ public class ApiKeyServiceImplTest {
     private AcceptProgramRepository acceptProgramRepository;
 
     @Before
-    @Transactional
+    @Rollback(false)
     public void setUp() throws Exception {
         targetKey = service.generateNewKey(USER_ID);
         assertThat(targetKey, is(not(nullValue())));
     }
 
-    @Test
-    @Transactional
+    @After
     public void tearDown() throws Exception {
         service.deleteKey(targetKey.getId());
-        assertThat(targetKey.isDeleted(), is(true));
+        ApiKey apiKey = service.getApiKey(targetKey.getId());
+        assertThat(apiKey.isDeleted(), is(true));
     }
 
     @Test
@@ -85,7 +86,6 @@ public class ApiKeyServiceImplTest {
     }
 
     @Test
-    @Transactional
     public void testRemoveProgramFrom2() throws Exception {
         AcceptProgram program = addProgramTo();
         boolean result = service.removeProgramFrom(targetKey, program.getId());

@@ -7,7 +7,7 @@ ext {
     javaVersion = 1.7
     slf4jVersion = '1.7.2'
     querydslVersion = '3.2.4'
-    hibernateVersion = "4.1.10.Final"
+    hibernateVersion = "4.2.7.Final"
 }
 
 buildscript {
@@ -112,6 +112,13 @@ subprojects {
 }
 
 configure(subprojects.findAll { it.name.endsWith('domain') }) {
+    apply plugin: 'application'
+    mainClassName = "co.kr.daesung.app.center.domain.utils.AddressPutterMain"
+
+    run {
+        args "${dir}"
+    }
+
     sourceSets {
         generated {
             java {
@@ -121,10 +128,12 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
     }
 
     repositories {
+        maven {url = "http://192.168.13.209:8080/nexus/content/repositories/releases/"}
         maven {url = "http://192.168.13.209:8080/nexus/content/repositories/thirdparty/"}
     }
 
     dependencies {
+        compile 'me.xyzlast:common-dao-spring-config:0.9.0'
         compile 'ch.qos.logback:logback-classic:1.0.13'
         compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
         compile 'mysql:mysql-connector-java:5.1.22'
@@ -140,9 +149,9 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
         compile "org.springframework:spring-context-support:${rootProject.ext.springVersion}"
 
         compile "org.hibernate:hibernate-core:${rootProject.ext.hibernateVersion}"
+        compile "org.hibernate:hibernate-entitymanager:${rootProject.ext.hibernateVersion}"
+        compile "org.hibernate:hibernate-validator:5.0.1.Final"
         compile "org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1. Final"
-        compile "org.hibernate:hibernate-entitymanager:4.1.10.Final"
-        compile "org.hibernate:hibernate-validator:4.3.1.Final"
 
         compile 'org.hibernate:hibernate-ehcache:4.2.7.Final'
         compile 'net.sf.ehcache:ehcache:2.7.4'

@@ -88,7 +88,6 @@ public class NoticeServiceImplTest {
     }
 
     @Test
-    @Transactional
     public void testEdit() throws Exception {
         Notice notice = writeNotice();
         Notice editedNotice = noticeService.edit(USER_ID, notice.getId(), notice.getTitle() + "_EDITED", notice.getContent() + "_EDITED", true);
@@ -103,7 +102,6 @@ public class NoticeServiceImplTest {
     }
 
     @Test
-    @Transactional
     public void testEdit2() throws Exception {
         Notice notice = writeNotice();
         try {
@@ -117,7 +115,6 @@ public class NoticeServiceImplTest {
     }
 
     @Test
-    @Transactional
     public void testDeleteNotice() throws Exception {
         Notice notice = writeNotice();
         boolean deleteResult = noticeService.deleteNotice(notice.getId(), false);
