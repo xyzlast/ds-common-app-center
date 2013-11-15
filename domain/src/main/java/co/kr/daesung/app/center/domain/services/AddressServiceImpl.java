@@ -227,7 +227,22 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public boolean clearAllAddresses() {
+        busanRepository.deleteAllInBatch();
+        chungcheongBukdoRepository.deleteAllInBatch();
+        chungcheongNamdoRepository.deleteAllInBatch();
+        daeguRepository.deleteAllInBatch();
+        daejeonRepository.deleteAllInBatch();
+        gangwondoRepository.deleteAllInBatch();
+        gyeonggidoRepository.deleteAllInBatch();
+        gyeongsangBukdoRepository.deleteAllInBatch();
+        gyeongsangNamdoRepository.deleteAllInBatch();
+        incheonRepository.deleteAllInBatch();
+        jejudoRepository.deleteAllInBatch();
+        jeollaBukdoRepository.deleteAllInBatch();
+        jeollaNamdoRepository.deleteAllInBatch();
         sejongRepository.deleteAllInBatch();
+        seoulRepository.deleteAllInBatch();
+        ulsanRepository.deleteAllInBatch();
         eupMyeonDongRiRepository.deleteAllInBatch();
         siGunGuRepository.deleteAllInBatch();
         siDoRepository.deleteAllInBatch();
@@ -305,6 +320,7 @@ public class AddressServiceImpl implements AddressService {
                 repo.save(addresses);
             }
             bf.close();
+            System.out.println("");
             return true;
         } catch(Exception ex) {
             return false;
@@ -440,6 +456,7 @@ public class AddressServiceImpl implements AddressService {
                 }
             }
             bf.close();
+            System.out.println("");
             return true;
         } catch (IOException e) {
             e.printStackTrace();
