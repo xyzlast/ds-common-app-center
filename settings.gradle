@@ -1,2 +1,6 @@
 rootProject.name = 'commonApp'
-include 'domain', 'publicWeb'
+String[] modules = [
+        'domain',
+        'apiWeb'
+];
+include modules

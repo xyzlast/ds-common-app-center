@@ -46,7 +46,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AddressSearchServiceImpl implements AddressSearchService {
     @Autowired
     private SiDoRepository siDoRepository;

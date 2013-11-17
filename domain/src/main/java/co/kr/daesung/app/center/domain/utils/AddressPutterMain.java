@@ -2,7 +2,7 @@ package co.kr.daesung.app.center.domain.utils;
 
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import co.kr.daesung.app.center.domain.services.AddressPutService;
-import co.kr.daesung.app.center.domain.services.AddressService;
+import co.kr.daesung.app.center.domain.services.AddressSearchService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

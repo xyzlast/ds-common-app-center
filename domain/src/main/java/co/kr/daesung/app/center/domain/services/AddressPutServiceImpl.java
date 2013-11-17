@@ -9,10 +9,7 @@ import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,38 +28,60 @@ import java.util.List;
 public class AddressPutServiceImpl implements AddressPutService {
     @Autowired
     private EntityManagerFactory emf;
-    private static final int CONSOLE_DISPLAY_PER_COUNT = 500;
-    private static final int SESSION_FLUSH_ITEM_COUNT = 20;
+    private static final int CONSOLE_DISPLAY_PER_COUNT = 2000;
+    private static final int SESSION_FLUSH_ITEM_COUNT = 100;
+
+    private void executeNativeQuery(EntityManager em, String query) {
+        System.out.println(query);
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        em.createNativeQuery(query)
+                .setFlushMode(FlushModeType.COMMIT)
+                .setLockMode(LockModeType.NONE)
+                .executeUpdate();
+        transaction.commit();
+    }
 
     @Override
     public boolean clearAllAddresses() {
+        String[] deleteQueries = new String[] {
+                "DELETE FROM Busan",
+                "DELETE FROM ChungcheongBukdo",
+                "DELETE FROM ChungcheongNamdo",
+                "DELETE FROM Daegu",
+                "DELETE FROM Daejeon",
+                "DELETE FROM Gangwondo",
+                "DELETE FROM Gwangju",
+                "DELETE FROM Gyeonggido",
+                "DELETE FROM GyeongsangBukdo",
+                "DELETE FROM GyeongsangNamdo",
+                "DELETE FROM Incheon",
+                "DELETE FROM Jejudo",
+                "DELETE FROM JeollaBukdo",
+                "DELETE FROM JeollaNamdo",
+                "DELETE FROM Sejong",
+                "DELETE FROM Seoul",
+                "DELETE FROM Ulsan",
+                "DELETE FROM EupMyeonDongRi",
+                "DELETE FROM Road",
+                "DELETE FROM SiGunGu",
+                "DELETE FROM SiDo"
+        };
+
         EntityManager em = emf.createEntityManager();
+        for(String query : deleteQueries) {
+            executeNativeQuery(em, query);
+        }
+
+        return true;
+    }
+
+    private Object merge(EntityManager em, Object obj) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        em.createNativeQuery("DELETE FROM Busan").executeUpdate();
-        em.createNativeQuery("DELETE FROM ChungcheongBukdo");
-        em.createNativeQuery("DELETE FROM ChungcheongNamdo");
-        em.createNativeQuery("DELETE FROM Daegu");
-        em.createNativeQuery("DELETE FROM Daejeon");
-        em.createNativeQuery("DELETE FROM Gangwondo");
-        em.createNativeQuery("DELETE FROM Gwangju");
-        em.createNativeQuery("DELETE FROM Gyeonggido");
-        em.createNativeQuery("DELETE FROM GyeongsangBukdo");
-        em.createNativeQuery("DELETE FROM GyeongsangNamdo");
-        em.createNativeQuery("DELETE FROM Incheon");
-        em.createNativeQuery("DELETE FROM Jejudo");
-        em.createNativeQuery("DELETE FROM JeollaBukdo");
-        em.createNativeQuery("DELETE FROM JeollaNamdo");
-        em.createNativeQuery("DELETE FROM Sejong").executeUpdate();
-        em.createNativeQuery("DELETE FROM Seoul").executeUpdate();
-        em.createNativeQuery("DELETE FROM Ulsan").executeUpdate();
-        em.createNativeQuery("DELETE FROM EupMyeonDongRi").executeUpdate();
-        em.createNativeQuery("DELETE FROM Road").executeUpdate();
-        em.createNativeQuery("DELETE FROM SiGunGu").executeUpdate();
-        em.createNativeQuery("DELETE FROM SiDo").executeUpdate();
+        obj = em.merge(obj);
         transaction.commit();
-        em.close();
-        return true;
+        return obj;
     }
 
     @Override
@@ -86,10 +105,7 @@ public class AddressPutServiceImpl implements AddressPutService {
                         sido.setSidoNumber(sidoNumber);
                         sido.setSidoName(items[1]);
                         sido.setSidoTableName("table_name");
-                        EntityTransaction transaction = em.getTransaction();
-                        transaction.begin();
-                        sido = em.merge(sido);
-                        transaction.commit();
+                        sido = (SiDo) merge(em, sido);
                     }
                 }
 
@@ -99,10 +115,7 @@ public class AddressPutServiceImpl implements AddressPutService {
                     siGunGu.setSiGunGuNumber(sigunguNumber);
                     siGunGu.setSido(sido);
                     siGunGu.setSiGunGuName(items[2]);
-                    EntityTransaction transaction = em.getTransaction();
-                    transaction.begin();
-                    siGunGu = em.merge(siGunGu);
-                    transaction.commit();
+                    siGunGu = (SiGunGu) merge(em, siGunGu);
                 }
 
                 Road road = em.find(Road.class, roadNumber);
@@ -110,11 +123,7 @@ public class AddressPutServiceImpl implements AddressPutService {
                     road = new Road();
                     road.setRoadNumber(roadNumber);
                     road.setRoadName(items[9]);
-
-                    EntityTransaction transaction = em.getTransaction();
-                    transaction.begin();
-                    road = em.merge(road);
-                    transaction.commit();
+                    road = (Road) merge(em, road);
                 }
 
                 TypedQuery<EupMyeonDongRi> query = em.createQuery("select e from EupMyeonDongRi e where e.beopJungRiName=:beopJungRiName and e.beopJungEupMyeonDongName=:beopJungEupMyeonDongName and e.haengJungDongName=:haengJungDongName", EupMyeonDongRi.class);
@@ -136,11 +145,7 @@ public class AddressPutServiceImpl implements AddressPutService {
                     eupMyeonDongRi.setBeopJungEupMyeonDongName(items[3]);
                     eupMyeonDongRi.setBeopJungRiName(items[4]);
                     eupMyeonDongRi.setHaengJungDongName(items[18]);
-
-                    EntityTransaction transaction = em.getTransaction();
-                    transaction.begin();
-                    eupMyeonDongRi = em.merge(eupMyeonDongRi);
-                    transaction.commit();
+                    merge(em, eupMyeonDongRi);
                 }
                 count++;
                 if((count % SESSION_FLUSH_ITEM_COUNT) == 0) {

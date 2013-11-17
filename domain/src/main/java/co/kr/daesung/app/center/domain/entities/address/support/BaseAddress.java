@@ -42,4 +42,80 @@ public class BaseAddress {
     private String buildingName;
     private String buildingDetailName;
     private String siGunguBuildingName;
+
+    private enum JibeonAddressType {
+        NO_NUMBER,
+        MAIN_ONLY,
+        ALL
+    }
+
+    private JibeonAddressType getJibeonAddressType() {
+        if(jibeonMainNumber == null && jibeonSubNumber == null) {
+            return JibeonAddressType.NO_NUMBER;
+        } else if(jibeonMainNumber != null && jibeonSubNumber == null) {
+            return JibeonAddressType.MAIN_ONLY;
+        } else {
+            return JibeonAddressType.ALL;
+        }
+    }
+
+    public String toJibeonAddress(boolean merge) {
+        JibeonAddressType addressType = getJibeonAddressType();
+        if(addressType == JibeonAddressType.ALL && !merge) {
+            return String.format("%s %s %s %d-%d %s",
+                    siGunGu.getSido().getSidoName(),
+                    siGunGu.getSiGunGuName(),
+                    eupMyeonDongRi.getHaengJungDongName(),
+                    jibeonMainNumber,
+                    jibeonSubNumber,
+                    buildingName);
+        } else if( (addressType == JibeonAddressType.ALL && merge) ||
+                addressType == JibeonAddressType.MAIN_ONLY) {
+            return String.format("%s %s %s %d %s",
+                    siGunGu.getSido().getSidoName(),
+                    siGunGu.getSiGunGuName(),
+                    eupMyeonDongRi.getHaengJungDongName(),
+                    jibeonMainNumber,
+                    buildingName);
+        } else {
+            return String.format("%s %s %s %s",
+                    siGunGu.getSido().getSidoName(),
+                    siGunGu.getSiGunGuName(),
+                    eupMyeonDongRi.getHaengJungDongName(),
+                    buildingName);
+        }
+    }
+
+    public String toRoadAddress() {
+        if(buildingMainNumber != null) {
+            return String.format("%s %s %s %d %s",
+                    siGunGu.getSido().getSidoName(),
+                    siGunGu.getSiGunGuName(),
+                    road.getRoadName(),
+                    buildingMainNumber,
+                    buildingName);
+        } else {
+            return String.format("%s %s %s %s",
+                    siGunGu.getSido().getSidoName(),
+                    siGunGu.getSiGunGuName(),
+                    road.getRoadName(),
+                    buildingName);
+        }
+    }
+
+    public String getDisplayPostCode() {
+        if(this.postCode.equals("")) {
+            return "";
+        } else {
+            String firstCode = this.postCode.substring(0, 3);
+            String secondCode = this.postCode.substring(3);
+            return String.format("%s-%s", firstCode, secondCode);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s, %s",
+                getDisplayPostCode(), toJibeonAddress(false), toRoadAddress());
+    }
 }
