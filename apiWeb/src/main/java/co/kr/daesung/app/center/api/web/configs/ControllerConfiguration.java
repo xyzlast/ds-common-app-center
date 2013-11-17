@@ -1,7 +1,10 @@
 package co.kr.daesung.app.center.api.web.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -15,10 +18,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "co.kr.daesung.app.center.api.web.controllers")
+@EnableAspectJAutoProxy
+@ComponentScan(basePackages = { "co.kr.daesung.app.center.api.web.controllers",
+        "co.kr.daesung.app.center.api.web.aops" })
 public class ControllerConfiguration extends WebMvcConfigurerAdapter {
+
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper;
     }
 }

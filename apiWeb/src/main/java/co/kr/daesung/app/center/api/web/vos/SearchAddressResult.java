@@ -1,6 +1,7 @@
 package co.kr.daesung.app.center.api.web.vos;
 
 import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,17 +17,20 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class SearchAddressResult implements Serializable {
-    private String PostCode;
-    private String JibeonAddress;
-    private String RoadAddress;
+    @JsonProperty(value = "PostCode")
+    private String postCode;
+    @JsonProperty(value = "JibeonAddress")
+    private String jibeonAddress;
+    @JsonProperty(value = "RoadAddress")
+    private String roadAddress;
 
     public SearchAddressResult() {
 
     }
 
     public SearchAddressResult(BaseAddress baseAddress, boolean merge) {
-        PostCode = baseAddress.getDisplayPostCode();
-        JibeonAddress = baseAddress.toJibeonAddress(merge);
-        RoadAddress = baseAddress.toRoadAddress();
+        postCode = baseAddress.getDisplayPostCode();
+        jibeonAddress = baseAddress.toJibeonAddress(merge);
+        roadAddress = baseAddress.toRoadAddress();
     }
 }
