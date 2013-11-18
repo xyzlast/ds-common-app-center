@@ -6,6 +6,7 @@ import co.kr.daesung.app.center.domain.entities.auth.QAcceptProgram;
 import co.kr.daesung.app.center.domain.entities.auth.QApiKey;
 import co.kr.daesung.app.center.domain.repo.auth.AcceptProgramRepository;
 import co.kr.daesung.app.center.domain.repo.auth.ApiKeyRepository;
+import co.kr.daesung.app.center.domain.utils.ArrayUtil;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,9 +37,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     @Transactional(readOnly = true)
     public Page<ApiKey> getApiKeys(String userId, int pageIndex, int pageSize) {
         QApiKey qApiKey = QApiKey.apiKey;
-        Predicate predicate = qApiKey.userId.eq(userId);
+        Predicate predicate = qApiKey.userId.eq(userId).and(qApiKey.deleted.isFalse());
         PageRequest pageRequest = new PageRequest(pageIndex, pageSize);
-
         return apiKeyRepository.findAll(predicate, pageRequest);
     }
 
@@ -124,6 +125,9 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
         boolean isAccepted = acceptProgramRepository.count(predicate) == 1;
         if(isAccepted) {
+            apiKey.setUsedCount(apiKey.getUsedCount() + 1);
+            apiKeyRepository.save(apiKey);
+
             AcceptProgram acceptProgram = acceptProgramRepository.findOne(predicate);
             acceptProgram.increaseCallTime();
             acceptProgramRepository.save(acceptProgram);
@@ -140,6 +144,13 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         } else {
             return isAcceptedKey(apiKey, program);
         }
+    }
+
+    @Override
+    public List<AcceptProgram> getAcceptPrograms(String apiKeyId) {
+        QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
+        Predicate predicate = qAcceptProgram.apiKey.id.eq(apiKeyId).and(qAcceptProgram.deleted.isFalse());
+        return ArrayUtil.convertTo(acceptProgramRepository.findAll(predicate));
     }
 
     @Override

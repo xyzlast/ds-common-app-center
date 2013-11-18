@@ -21,6 +21,10 @@ public class ResultData {
     @JsonProperty(value = "Data")
     private Object data;
 
+    public ResultData() {
+
+    }
+
     public ResultData(Object data) {
         ok = true;
         message = "Execute api result ok";

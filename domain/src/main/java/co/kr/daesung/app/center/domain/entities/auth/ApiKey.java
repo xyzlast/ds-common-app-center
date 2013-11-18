@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,9 +24,7 @@ import java.util.List;
 @Setter
 public class ApiKey {
     @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-    @GeneratedValue(generator = "generator")
-    @Column(length = 32, columnDefinition="uniqueidentifier")
+    @Column(length = 36)
     private String id;
 
     @Column(name="userId", length = 20)
@@ -41,6 +40,7 @@ public class ApiKey {
 
     @PrePersist
     public void initPersistValues() {
+        id = UUID.randomUUID().toString();
         createTime = new Date();
         deleted = false;
         usedCount = 0L;

@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class SearchAddressResult implements Serializable {
+public class AddressItem implements Serializable {
     @JsonProperty(value = "PostCode")
     private String postCode;
     @JsonProperty(value = "JibeonAddress")
@@ -24,11 +24,11 @@ public class SearchAddressResult implements Serializable {
     @JsonProperty(value = "RoadAddress")
     private String roadAddress;
 
-    public SearchAddressResult() {
+    public AddressItem() {
 
     }
 
-    public SearchAddressResult(BaseAddress baseAddress, boolean merge) {
+    public AddressItem(BaseAddress baseAddress, boolean merge) {
         postCode = baseAddress.getDisplayPostCode();
         jibeonAddress = baseAddress.toJibeonAddress(merge);
         roadAddress = baseAddress.toRoadAddress();

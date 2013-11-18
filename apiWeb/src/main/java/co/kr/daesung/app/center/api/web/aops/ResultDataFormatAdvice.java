@@ -34,6 +34,6 @@ public class ResultDataFormatAdvice implements Ordered {
 
     @Override
     public int getOrder() {
-        return 2;  //To change body of implemented methods use File | Settings | File Templates.
+        return 2;
     }
 }

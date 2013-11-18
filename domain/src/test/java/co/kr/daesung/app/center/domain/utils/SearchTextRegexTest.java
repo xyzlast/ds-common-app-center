@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 
 import static org.mockito.Matchers.*;
@@ -30,6 +31,13 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 public class SearchTextRegexTest {
+    @Test
+    public void testUUID() {
+        UUID uuid = UUID.randomUUID();
+        System.out.println(uuid.toString());
+        assertThat(uuid.toString().length(), is(36));
+    }
+
     @Test
     public void testExtractSearchText() throws Exception {
         String sample1 = "구로동 245 번지";

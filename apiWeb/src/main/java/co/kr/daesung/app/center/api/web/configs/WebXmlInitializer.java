@@ -13,10 +13,10 @@ import javax.servlet.Filter;
  * Time: 1:13 AM
  * To change this template use File | Settings | File Templates.
  */
-public class WebXmlConfiguration extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class WebXmlInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { DomainConfiguration.class };
+        return new Class<?>[] { DomainConfiguration.class, SecurityConfiguration.class };
     }
 
     @Override

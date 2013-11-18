@@ -11,11 +11,11 @@
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"
             />
-    <cache name="simpleBeanCache"
-           maxElementsInMemory="10"
+    <cache name="sidoList"
+           maxElementsInMemory="1"
            eternal="false"
            overflowToDisk="false"
-           timeToIdleSeconds="300"
-           timeToLiveSeconds="600"
+           timeToIdleSeconds="30000"
+           timeToLiveSeconds="60000"
            memoryStoreEvictionPolicy="LRU" />
 </ehcache>

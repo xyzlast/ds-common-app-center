@@ -1,16 +1,13 @@
 package co.kr.daesung.app.center.domain.configs;
 
 import com.jolbox.bonecp.BoneCPDataSource;
-import me.xyzlast.configs.AbstractEhCacheConfigurer;
+import me.xyzlast.configs.EhCacheConfigurer;
 import me.xyzlast.configs.EnableOrm;
 import me.xyzlast.configs.HbmToDdl;
 import me.xyzlast.configs.OrmFramework;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -35,7 +32,8 @@ import java.util.Properties;
         hbmToDdl = HbmToDdl.NO_ACTION,
         packagesToScan = {"co.kr.daesung.app.center.domain.entities"},
         showSql = false)
-// @EnableCaching
+@Import(EhCacheConfigurer.class)
+@EnableCaching
 public class DomainConfiguration {
     @Autowired
     private Environment env;

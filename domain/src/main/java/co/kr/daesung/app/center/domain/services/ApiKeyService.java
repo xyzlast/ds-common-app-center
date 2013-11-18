@@ -4,6 +4,8 @@ import co.kr.daesung.app.center.domain.entities.auth.AcceptProgram;
 import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ykyoon
@@ -24,6 +26,7 @@ public interface ApiKeyService {
     boolean isAcceptedKey(ApiKey apiKey, String program);
     boolean isAcceptedKey(String apiKeyId, String program);
 
+    List<AcceptProgram> getAcceptPrograms(String apiKeyId);
     Page<ApiKey> getTopUsedApiKeys(int pageIndex, int pageSize);
     Page<AcceptProgram> getTopUsedPrograms(int pageIndex, int pageSize);
 }

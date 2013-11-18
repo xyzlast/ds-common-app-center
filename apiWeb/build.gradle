@@ -1,5 +1,13 @@
+repositories {
+    maven {
+        url 'http://repo.spring.io/milestone'
+    }
+}
+
 dependencies {
     compile project(":domain")
     compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
     compile 'org.aspectj:aspectjweaver:1.7.4'
+    compile 'org.springframework.security:spring-security-web:3.2.0.RC2'
+    compile 'org.springframework.security:spring-security-config:3.2.0.RC2'
 }
