@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,19 +50,44 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private ApplicationContext context;
 
+    @Bean
+    public DigestAuthenticationFilter digestAuthenticationFilter() throws Exception {
+        DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
+        digestAuthenticationFilter.setAuthenticationEntryPoint(digestAuthenticationEntryPoint());
+        digestAuthenticationFilter.setUserDetailsService(userDetailsServiceBean());
+
+        return digestAuthenticationFilter;
+    }
+
+    @Bean
+    public DigestAuthenticationEntryPoint digestAuthenticationEntryPoint() {
+        DigestAuthenticationEntryPoint entryPoint = new DigestAuthenticationEntryPoint();
+        entryPoint.setRealmName("ykyoon");
+        entryPoint.setKey("xyzlast");
+        entryPoint.setNonceValiditySeconds(99999);
+        return entryPoint;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic()
-                .realmName("ds")
-                .and()
+        http.exceptionHandling().authenticationEntryPoint(digestAuthenticationEntryPoint())
+             .and()
+                .csrf().disable()
+                //.httpBasic()
+            //.and()
                 .authorizeRequests()
                 .antMatchers("/api/address/**", "/Api/Address/**").anonymous()
-                .antMatchers("/api/authKey/**").authenticated();
+                .antMatchers("/api/apiKey/**").authenticated()
+            .and()
+                .addFilterAfter(digestAuthenticationFilter(), BasicAuthenticationFilter.class);
+
+
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
+        // auth.inMemoryAuthentication().withUser("ykyoon").password("1234").roles("USER", "ADMIN");
     }
 
     @Bean
@@ -89,16 +118,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new PasswordEncoder() {
             @Override
             public String encode(CharSequence rawPassword) {
-                try {
-                    return StringEncrypter.encrypt(rawPassword.toString());
-                } catch (UnsupportedEncodingException e) {
-                    return "";
-                }
+//                try {
+                    return rawPassword.toString();
+                    //return StringEncrypter.encrypt(rawPassword.toString());
+//                } catch (UnsupportedEncodingException e) {
+//                    return "";
+//                }
             }
 
             @Override
             public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return encodedPassword.equals(encode(rawPassword));
+//                return encodedPassword.equals(encode(rawPassword));
+                return rawPassword.equals(encodedPassword);
             }
         };
     }

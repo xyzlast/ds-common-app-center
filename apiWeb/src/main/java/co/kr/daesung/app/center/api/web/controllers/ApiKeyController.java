@@ -10,8 +10,11 @@ import co.kr.daesung.app.center.domain.entities.auth.User;
 import co.kr.daesung.app.center.domain.services.ApiKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,13 +36,13 @@ public class ApiKeyController {
     @Autowired
     private ApiKeyService apiKeyService;
 
-    @RequestMapping(value = "/api/authKey/getTempData")
+    @RequestMapping(value = "/api/apiKey/getTempData")
     public Object getTempData() {
         ResultData r = new ResultData(new IllegalArgumentException("Test Exception"));
         return r;
     }
 
-    @RequestMapping(value = "/api/authKey/getApiKeys")
+    @RequestMapping(value = "/api/apiKey/apiKeyList")
     @ResultDataFormat
     @Jsonp
     public Object getApiKeyList(HttpServletRequest request, HttpServletResponse response, int pageIndex, int pageSize) {
@@ -52,5 +55,20 @@ public class ApiKeyController {
         return result;
     }
 
-    
+    @RequestMapping(value = "/api/apiKey/generate", method = RequestMethod.GET)
+    @ResultDataFormat
+    @Jsonp
+    public Object generateApiKey(HttpServletRequest request, HttpServletResponse response) {
+        // ApiKey apiKey = apiKeyService.generateNewKey(userInfoHelper.getUserFromRequest(request).getUsername());
+        ApiKey apiKey = new ApiKey();
+        return new ApiKeyItem(apiKey);
+    }
+
+    @RequestMapping(value = "/api/apiKey/delete", method = RequestMethod.DELETE)
+    @ResultDataFormat
+    @Jsonp
+    public Object deleteApiKey(HttpServletRequest request, HttpServletResponse response, String apiKeyId) {
+        Boolean result = apiKeyService.deleteKey(apiKeyId);
+        return result;
+    }
 }
