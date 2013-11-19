@@ -73,11 +73,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(digestAuthenticationEntryPoint())
              .and()
                 .csrf().disable()
-                //.httpBasic()
-            //.and()
                 .authorizeRequests()
                 .antMatchers("/api/address/**", "/Api/Address/**").anonymous()
                 .antMatchers("/api/apiKey/**").authenticated()
+                .antMatchers("/api/auth/**").authenticated()
             .and()
                 .addFilterAfter(digestAuthenticationFilter(), BasicAuthenticationFilter.class);
 
@@ -87,7 +86,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
-        // auth.inMemoryAuthentication().withUser("ykyoon").password("1234").roles("USER", "ADMIN");
     }
 
     @Bean
@@ -107,28 +105,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserInfoHelper userInfoHelper() {
-        UserInfoHelperImpl userInfoHelper = new UserInfoHelperImpl();
-        userInfoHelper.setUserService(context.getBean(UserService.class));
-        return userInfoHelper;
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoder() {
             @Override
             public String encode(CharSequence rawPassword) {
-//                try {
                     return rawPassword.toString();
-                    //return StringEncrypter.encrypt(rawPassword.toString());
-//                } catch (UnsupportedEncodingException e) {
-//                    return "";
-//                }
             }
 
             @Override
             public boolean matches(CharSequence rawPassword, String encodedPassword) {
-//                return encodedPassword.equals(encode(rawPassword));
                 return rawPassword.equals(encodedPassword);
             }
         };

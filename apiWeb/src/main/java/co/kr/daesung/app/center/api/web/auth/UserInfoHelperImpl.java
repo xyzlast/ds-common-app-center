@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
  */
 @Getter
 @Setter
+@Deprecated
 public class UserInfoHelperImpl implements UserInfoHelper {
     public static final String AUTH_HEADER = "Authorization";
 

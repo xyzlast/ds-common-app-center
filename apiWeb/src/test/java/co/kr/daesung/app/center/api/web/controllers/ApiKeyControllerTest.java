@@ -14,7 +14,12 @@ import static org.junit.Assert.*;
 
 import co.kr.daesung.app.center.api.web.configs.ControllerConfiguration;
 import co.kr.daesung.app.center.api.web.configs.SecurityConfiguration;
+import co.kr.daesung.app.center.api.web.vos.ResultData;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
+import co.kr.daesung.app.center.domain.entities.auth.AcceptProgram;
+import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
+import co.kr.daesung.app.center.domain.services.ApiKeyService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +29,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.transaction.Transaction;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,79 +52,124 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @WebAppConfiguration
 @ContextConfiguration(classes = { DomainConfiguration.class, SecurityConfiguration.class, ControllerConfiguration.class})
 public class ApiKeyControllerTest {
+
+    private static final String USER_ID = "ykyoon";
+    private static final String PASSWORD = "1234";
+
     @Autowired
     private WebApplicationContext context;
     private MockMvc mvc;
+    @Autowired
+    private ApiKeyService apiKeyService;
+    private String apiKeyId;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Before
+    @Transactional
     public void setUp() throws Exception {
         mvc = AuthorizedControllerHelper.getSecurityAppliedMockMvc(context);
-        //mvc = webAppContextSetup(context).build();
         assertThat(mvc, is(not(nullValue())));
+        apiKeyId = apiKeyService.generateNewKey(USER_ID).getId();
+    }
+
+    @After
+    @Transactional
+    public void tearDown() throws Exception {
+        apiKeyService.deleteKey(USER_ID, apiKeyId);
     }
 
     @Test
     public void getTempDataWithNoAuth() throws Exception {
-        mvc.perform(get("/api/apiKey/getTempData"))
+        mvc.perform(get(ApiKeyController.GET_TEMP_DATA))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void getTempDataWithAuth() throws Exception {
-        mvc.perform(get("/api/apiKey/getTempData")
-                .header(AuthorizedControllerHelper.AUTH_HEADER, AuthorizedControllerHelper.getBasicAuthHeaderValue("ykyoon", "1234")))
+        String uri = ApiKeyController.GET_TEMP_DATA;
+        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
+        mvc.perform(get(uri)
+                .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testGenerateKey() throws Exception {
-        String clientRequest = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", "/api/apiKey/generate", "GET");
-        MvcResult result = mvc.perform(get("/api/apiKey/generate")
-                .header(AuthorizedControllerHelper.AUTH_HEADER, clientRequest))
+        String digestAuthenticateion = AuthorizedControllerHelper
+                .getDigestAuthenticateion(mvc, "ykyoon", "1234", ApiKeyController.API_API_KEY_GENERATE, "PUT");
+        MvcResult result = mvc.perform(put(ApiKeyController.API_API_KEY_GENERATE)
+                .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
-
-        mvc.perform(get("/api/apiKey/generate")
-                .header(AuthorizedControllerHelper.AUTH_HEADER, clientRequest))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
-
-        mvc.perform(get("/api/apiKey/generate")
-                .header(AuthorizedControllerHelper.AUTH_HEADER, clientRequest))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
-
-        mvc.perform(get("/api/apiKey/generate")
-                .header(AuthorizedControllerHelper.AUTH_HEADER, clientRequest))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
+        ResultData d = objectMapper.readValue(result.getResponse().getContentAsString(), ResultData.class);
     }
 
 
     @Test
     public void testDelteKey() throws Exception {
-        String authValue = AuthorizedControllerHelper.getBasicAuthHeaderValue("ykyoon", "662a5aae230dd1be88bf1b8dbdb38dc0");
-        MvcResult result = mvc.perform(delete("/api/apiKey/delete")
+        String uri = ApiKeyController.API_API_KEY_DELETE;
+        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "DELETE");
+        MvcResult result = mvc.perform(delete(uri)
                 .param("apiKeyId", "ABC")
-                .header(AuthorizedControllerHelper.AUTH_HEADER, authValue))
+                .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andExpect(status().isOk())
                 .andReturn();
-        String contentString = result.getResponse().getContentAsString();
-        System.out.println(contentString);
+        ResultData d = objectMapper.readValue(result.getResponse().getContentAsString(), ResultData.class);
     }
 
     @Test
     public void testGetApiKeyList() throws Exception {
-        String authValue = AuthorizedControllerHelper.getBasicAuthHeaderValue("ykyoon", "1234");
-        MvcResult result = mvc.perform(put("/api/apiKey/apiKeyList")
+        String uri = ApiKeyController.API_API_KEY_LIST;
+        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
+        MvcResult result = mvc.perform(get(uri)
                                         .param("pageIndex", "0")
                                         .param("pageSize", "10")
-                                        .header(AuthorizedControllerHelper.AUTH_HEADER, authValue))
+                                        .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                             .andDo(MockMvcResultHandlers.print())
                             .andExpect(status().isOk())
                             .andReturn();
-        String contentString = result.getResponse().getContentAsString();
-        System.out.println(contentString);
+        ResultData d = objectMapper.readValue(result.getResponse().getContentAsString(), ResultData.class);
+    }
+
+    @Test
+    public void testAddProgram() throws Exception {
+        String uri = ApiKeyController.API_API_KEY_PROGRAM;
+        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "PUT");
+        MvcResult result = mvc.perform(put(uri)
+                .param("apiKeyId", apiKeyId)
+                .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+        ResultData d = objectMapper.readValue(result.getResponse().getContentAsString(), ResultData.class);
+    }
+
+    @Test
+    public void testGetPrograms() throws Exception {
+        String uri = ApiKeyController.API_API_KEY_PROGRAMS;
+        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
+        MvcResult result = mvc.perform(get(uri)
+                .param("apiKeyId", apiKeyId)
+                .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+        ResultData d = objectMapper.readValue(result.getResponse().getContentAsString(), ResultData.class);
+    }
+
+    @Test
+    public void testDeleteProgram() throws Exception {
+        AcceptProgram program = addProgramForTest();
+        Integer programId = program.getId();
+
+
+    }
+
+    @Transactional
+    private AcceptProgram addProgramForTest() throws IllegalAccessException {
+        ApiKey apiKey = apiKeyService.getApiKey(apiKeyId);
+        return apiKeyService.addProgramTo(USER_ID, apiKey, "ykyoon", "description");
     }
 }

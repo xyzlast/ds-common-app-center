@@ -155,6 +155,7 @@ public class MessageServiceImpl implements MessageService {
         nLeaderMessage.setToUserId(toUserId);
         nLeaderMessage.setTitle(title);
         nLeaderMessage.setContent(content);
+        nLeaderMessage.setApiKey(apiKey);
         boolean duplicated = false;
         if(!force) {
             QNLeaderMessage qNLeaderMessage = QNLeaderMessage.nLeaderMessage;

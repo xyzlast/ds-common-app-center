@@ -71,11 +71,11 @@ public class AuthorizedControllerHelper {
         if(method.equals("GET")) {
             mvcResult = mvc.perform(get(uri)).andDo(print()).andReturn();
         } else if(method.equals("POST")) {
-            mvcResult = mvc.perform(post(uri)).andReturn();
+            mvcResult = mvc.perform(post(uri)).andDo(print()).andReturn();
         } else if(method.equals("PUT")) {
-            mvcResult = mvc.perform(put(uri)).andReturn();
+            mvcResult = mvc.perform(put(uri)).andDo(print()).andReturn();
         } else if(method.equals("DELETE")) {
-            mvcResult = mvc.perform(delete(uri)).andReturn();
+            mvcResult = mvc.perform(delete(uri)).andDo(print()).andReturn();
         }
         String authHeader = mvcResult.getResponse().getHeader("WWW-Authenticate");
         String[] authHeaderItemStrings = authHeader.split(",\\s");

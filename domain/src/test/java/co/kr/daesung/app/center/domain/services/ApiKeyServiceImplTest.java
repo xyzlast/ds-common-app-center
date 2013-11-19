@@ -28,7 +28,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,6 +36,7 @@ public class ApiKeyServiceImplTest {
     @Autowired
     private ApiKeyService service;
     private static final String USER_ID = "201105010";
+    private static final String WRONG_USER_ID = "WRONG_USER_ID";
     private ApiKey targetKey;
     private static final String TEST_PROGRAMNAME = "TEST_APPLICATION";
     private static final String TEST_APP_DESCRIPTION = "TEST_APP_DESCRIPTION";
@@ -52,9 +52,14 @@ public class ApiKeyServiceImplTest {
 
     @After
     public void tearDown() throws Exception {
-        service.deleteKey(targetKey.getId());
+        service.deleteKey(USER_ID, targetKey.getId());
         ApiKey apiKey = service.getApiKey(targetKey.getId());
         assertThat(apiKey.isDeleted(), is(true));
+    }
+
+    @Test(expected = IllegalAccessException.class)
+    public void testDeleteApiKeyWithException() throws Exception {
+        service.deleteKey(WRONG_USER_ID, targetKey.getId());
     }
 
     @Test
@@ -64,8 +69,8 @@ public class ApiKeyServiceImplTest {
         assertThat(apiKey.getId(), is(targetKey.getId()));
     }
 
-    private AcceptProgram addProgramTo() {
-        AcceptProgram program = service.addProgramTo(targetKey, TEST_PROGRAMNAME, TEST_APP_DESCRIPTION);
+    private AcceptProgram addProgramTo() throws IllegalAccessException {
+        AcceptProgram program = service.addProgramTo(USER_ID, targetKey, TEST_PROGRAMNAME, TEST_APP_DESCRIPTION);
         assertThat(program, is(not(nullValue())));
         assertThat(program.getApiKey(), is(targetKey));
         return program;
@@ -81,14 +86,17 @@ public class ApiKeyServiceImplTest {
     @Transactional
     public void testRemoveProgramFrom1() throws Exception {
         addProgramTo();
-        boolean result = service.removeProgramFrom(targetKey, TEST_PROGRAMNAME);
+        boolean result = service.removeProgramFrom(USER_ID, targetKey, TEST_PROGRAMNAME);
         assertThat(result, is(true));
     }
 
     @Test
     public void testRemoveProgramFrom2() throws Exception {
         AcceptProgram program = addProgramTo();
-        boolean result = service.removeProgramFrom(targetKey, program.getId());
+        AcceptProgram anotherProgram = service.getAcceptProgram(program.getId());
+        assertThat(program.getId(), is(anotherProgram.getId()));
+        assertThat(program.getApiKey().getId(), is(anotherProgram.getApiKey().getId()));
+        boolean result = service.removeProgramFrom(USER_ID, program.getId());
         assertThat(result, is(true));
     }
 

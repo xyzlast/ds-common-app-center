@@ -13,6 +13,7 @@ import static org.hamcrest.core.IsNot.*;
 import static org.junit.Assert.*;
 
 import co.kr.daesung.app.center.api.web.configs.ControllerConfiguration;
+import co.kr.daesung.app.center.api.web.configs.SecurityConfiguration;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {DomainConfiguration.class, ControllerConfiguration.class})
+@ContextConfiguration(classes = {DomainConfiguration.class, SecurityConfiguration.class, ControllerConfiguration.class})
 @WebAppConfiguration
 public class MainControllerTest {
     @Autowired

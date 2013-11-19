@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * Time: 5:37 PM
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 public interface UserInfoHelper {
     User getUserFromRequest(HttpServletRequest request);
 }

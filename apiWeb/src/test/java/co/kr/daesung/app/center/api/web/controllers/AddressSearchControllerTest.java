@@ -28,13 +28,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,20 +55,19 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testGetSiDoList() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/getSiDoList")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SIDO_LIST)
                 .param("key", authKey)
                 .header("client", clientApp))
                 .andExpect(status().isOk())
                 .andReturn();
         String contentString = result.getResponse().getContentAsString();
-        System.out.println(contentString);
         ResultData resultData = objectMapper.readValue(contentString, ResultData.class);
         assertThat(resultData.isOk(), is(true));
     }
 
     @Test
     public void testSearchByJibeonWithApplication() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/searchByJibeon")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
                 .param("jibeonName", "신도림")
                 .param("mergeJibeon", "true")
                 .param("pageIndex", "0")
@@ -89,7 +84,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByJibeonWithHttpClient() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/searchByJibeon")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
                 .param("jibeonName", "신도림")
                 .param("mergeJibeon", "true")
                 .param("pageIndex", "0")
@@ -107,7 +102,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByJibeonWithNoKey() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/searchByJibeon")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
                                 .param("jibeonName", "신도림")
                                 .param("mergeJibeon", "true")
                                 .param("pageIndex", "0")
@@ -124,7 +119,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByJibeonUsingJsonpWithNoKey() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/searchByJibeon")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
                 .param("jibeonName", "신도림")
                 .param("mergeJibeon", "true")
                 .param("pageIndex", "0")
@@ -138,7 +133,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByRoad() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/searchByRoad")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
                 .param("roadName", "지봉로")
                 .param("sidoNumber", "11")
                 .param("merge", "true")
@@ -156,7 +151,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByBuildingName() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/searchByBuildingName")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
                 .param("sidoNumber", "11")
                 .param("buildingName", "푸르지오")
                 .param("pageIndex", "0")
@@ -173,7 +168,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testGetSiGunGuList() throws Exception {
-        MvcResult result = mvc.perform(get("/api/address/getSiGunGuList")
+        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SIGUNGU_LIST)
                 .param("sidoNumber", "11")
                 .param("key", authKey)
                 .header("client", clientApp))

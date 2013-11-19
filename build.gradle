@@ -78,6 +78,8 @@ subprojects {
         mavenCentral()
         jcenter()
         maven { url 'http://repo.spring.io/snapshot' }
+        maven {url = "http://192.168.13.209:8080/nexus/content/repositories/releases/"}
+        maven {url = "http://192.168.13.209:8080/nexus/content/repositories/thirdparty/"}
     }
     
     dependencies {
@@ -92,9 +94,10 @@ subprojects {
     
     test {
         jacoco {
-            append = false
             destinationFile = file("target/jacoco.exec")
             classDumpFile = file("target/classpathdumps")
+            excludes = [ '**.entities.**' ]
+            append = false
         }
     }
 
@@ -131,19 +134,13 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
         }
     }
 
-    repositories {
-        maven {url = "http://192.168.13.209:8080/nexus/content/repositories/releases/"}
-        maven {url = "http://192.168.13.209:8080/nexus/content/repositories/thirdparty/"}
-    }
-
     dependencies {
         compile 'me.xyzlast:common-dao-spring-config:0.9.1'
         compile 'ch.qos.logback:logback-classic:1.0.13'
-//        compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
         compile 'mysql:mysql-connector-java:5.1.22'
         compile 'com.jolbox:bonecp:0.7.1.RELEASE'
         compile 'com.google.guava:guava:14.0'
-
+        compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
         compile("org.springframework:spring-core:${rootProject.ext.springVersion}") {
             exclude(group: 'commons-logging', module: 'commons-logging')
         }

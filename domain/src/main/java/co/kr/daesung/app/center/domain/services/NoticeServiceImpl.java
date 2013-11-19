@@ -72,7 +72,7 @@ public class NoticeServiceImpl implements NoticeService {
         noticeRepository.save(notice);
 
         if(title.equals("")) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Title is empty!!");
         }
 
         return notice;

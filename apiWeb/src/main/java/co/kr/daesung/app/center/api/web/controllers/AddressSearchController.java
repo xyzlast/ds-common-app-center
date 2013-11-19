@@ -8,7 +8,6 @@ import co.kr.daesung.app.center.domain.entities.address.SiDo;
 import co.kr.daesung.app.center.domain.entities.address.SiGunGu;
 import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
 import co.kr.daesung.app.center.domain.services.AddressSearchService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,12 +30,20 @@ import java.util.Map;
  */
 @Controller
 public class AddressSearchController {
+    public static final String API_ADDRESS_SIDO_LIST_OLD = "/Api/Address/GetSiDoList";
+    public static final String API_ADDRESS_SEARCH_BY_JIBEON_OLD = "/Api/Address/SearchByJibeon";
+    public static final String API_ADDRESS_SEARCH_BY_BUILDING_OLD = "/Api/Address/SearchByBuildingName";
+    public static final String API_ADDRESS_GET_SI_GUN_GU_LIST_OLD = "/Api/Address/GetSiGunGuList";
+    public static final String API_ADDRESS_SEARCH_BY_ROAD_OLD = "/Api/Address/SearchByRoad";
+
+    public static final String API_ADDRESS_SIDO_LIST = "/api/address/sido/list";
+    public static final String API_ADDRESS_SEARCH = "/api/address/search";
+    public static final String API_ADDRESS_SIGUNGU_LIST = "/api/address/sigungu/list";
+
     @Autowired
     private AddressSearchService service;
-    @Autowired
-    private ObjectMapper objectMapper;
 
-    @RequestMapping(value = { "/api/address/getSiDoList", "/Api/Address/SearchByJibeon"})
+    @RequestMapping(value = {API_ADDRESS_SIDO_LIST, API_ADDRESS_SIDO_LIST_OLD})
     @ResponseBody
     @ResultDataFormat
     @Jsonp
@@ -54,7 +61,7 @@ public class AddressSearchController {
     }
 
 
-    @RequestMapping(value = { "/api/address/searchByJibeon", "/Api/Address/SearchByJibeon"})
+    @RequestMapping(value = {API_ADDRESS_SEARCH, API_ADDRESS_SEARCH_BY_JIBEON_OLD}, params = "jibeonName")
     @ResponseBody
     @ResultDataFormat
     @Jsonp
@@ -66,7 +73,7 @@ public class AddressSearchController {
         return convertBaseAddressesToSearchAddressResults(addresses, mergeJibeon);
     }
 
-    @RequestMapping(value = { "/api/address/searchByRoad", "/Api/Address/SearchByRoad"})
+    @RequestMapping(value = {API_ADDRESS_SEARCH, API_ADDRESS_SEARCH_BY_ROAD_OLD}, params = "roadName")
     @ResponseBody
     @ResultDataFormat
     @Jsonp
@@ -77,7 +84,7 @@ public class AddressSearchController {
         return convertBaseAddressesToSearchAddressResults(baseAddresses, merge);
     }
 
-    @RequestMapping(value = {"/api/address/searchByBuildingName", "/Api/Address/SearchByBuildingName"})
+    @RequestMapping(value = {API_ADDRESS_SEARCH, API_ADDRESS_SEARCH_BY_BUILDING_OLD}, params = "buildingName")
     @ResponseBody
     @ResultDataFormat
     @Jsonp
@@ -91,7 +98,7 @@ public class AddressSearchController {
         return convertBaseAddressesToSearchAddressResults(addresses, false);
     }
 
-    @RequestMapping(value = {"/api/address/getSiGunGuList", "/Api/Address/GetSiGunGuList"})
+    @RequestMapping(value = {API_ADDRESS_SIGUNGU_LIST, API_ADDRESS_GET_SI_GUN_GU_LIST_OLD})
     @ResponseBody
     @ResultDataFormat
     @Jsonp

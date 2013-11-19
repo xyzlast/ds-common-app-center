@@ -18,11 +18,12 @@ public interface ApiKeyService {
 
     ApiKey generateNewKey(String userId);
     ApiKey getApiKey(String id);
-    boolean deleteKey(String id);
+    boolean deleteKey(String userId, String id) throws IllegalAccessException;
 
-    AcceptProgram addProgramTo(ApiKey apiKey, String program, String description);
-    boolean removeProgramFrom(ApiKey apiKey, String programName);
-    boolean removeProgramFrom(ApiKey apiKey, int programId);
+    AcceptProgram addProgramTo(String userId, ApiKey apiKey, String program, String description) throws IllegalAccessException;
+    AcceptProgram getAcceptProgram(int programId);
+    boolean removeProgramFrom(String userId, ApiKey apiKey, String programName) throws IllegalAccessException;
+    boolean removeProgramFrom(String userId, int programId) throws IllegalAccessException;
     boolean isAcceptedKey(ApiKey apiKey, String program);
     boolean isAcceptedKey(String apiKeyId, String program);
 

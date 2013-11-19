@@ -16,6 +16,7 @@ import co.kr.daesung.app.center.api.web.configs.ControllerConfiguration;
 import co.kr.daesung.app.center.api.web.configs.SecurityConfiguration;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import co.kr.daesung.app.center.domain.entities.auth.User;
+import co.kr.daesung.app.center.domain.services.UserService;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ContextConfiguration(classes = {DomainConfiguration.class, SecurityConfiguration.class, ControllerConfiguration.class})
 @WebAppConfiguration
 public class UserInfoHelperImplTest {
-    @Autowired
     private UserInfoHelper userInfoHelper;
+    @Autowired
+    private UserService userService;
     private static final String USER_NAME = "ykyoon";
 
     @Before
     public void setUp() {
-        assertThat(userInfoHelper, is(not(nullValue())));
+        UserInfoHelperImpl userInfoHelper = new UserInfoHelperImpl();
+        userInfoHelper.setUserService(userService);
+        this.userInfoHelper = userInfoHelper;
     }
 
     @Test

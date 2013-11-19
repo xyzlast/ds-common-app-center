@@ -22,6 +22,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,15 +102,10 @@ public class NoticeServiceImplTest {
         assertThat(deletedNotice, is(nullValue()));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testEdit2() throws Exception {
         Notice notice = writeNotice();
-        try {
-            noticeService.edit(USER_ID, notice.getId(), "", "", false);
-            assertThat(false, is(true));
-        } catch(Exception ex) {
-            assertThat("Exception is occured", true, is(true));
-        }
+        noticeService.edit(USER_ID, notice.getId(), "", "", false);
         Notice extractedNotice = noticeService.getNotice(notice.getId());
         assertThat(extractedNotice.getTitle(), is(notice.getTitle()));
     }

@@ -1,11 +1,11 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
 import co.kr.daesung.app.center.api.web.aops.ResultDataFormat;
-import co.kr.daesung.app.center.api.web.auth.UserInfoHelper;
 import co.kr.daesung.app.center.domain.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,14 +19,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 public class AuthController {
+    public static final String API_AUTH_USERINFO = "/api/auth/userinfo";
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserInfoHelper userInfoHelper;
 
-    @RequestMapping("/auth/getUserInfo")
+    @RequestMapping(API_AUTH_USERINFO)
     @ResultDataFormat
+    @ResponseBody
     public Object getUserInfo(HttpServletRequest request, HttpServletResponse response) {
-        return userInfoHelper.getUserFromRequest(request);
+        return userService.findByUsername(request.getUserPrincipal().getName());
     }
 }

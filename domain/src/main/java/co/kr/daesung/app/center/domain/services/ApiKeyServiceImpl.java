@@ -33,6 +33,14 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     @Autowired
     private AcceptProgramRepository acceptProgramRepository;
 
+    private static final String PERMISSION_NOT_MATCHED = "this user do not have this permission";
+
+    private void checkAccessable(String userId, ApiKey apiKey) throws IllegalAccessException {
+        if(!apiKey.getUserId().equals(userId)) {
+            throw new IllegalAccessException(PERMISSION_NOT_MATCHED);
+        }
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<ApiKey> getApiKeys(String userId, int pageIndex, int pageSize) {
@@ -57,16 +65,23 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
-    public boolean deleteKey(String id) {
+    public boolean deleteKey(String userId, String id) throws IllegalAccessException {
         ApiKey apiKey = apiKeyRepository.findOne(id);
+        checkAccessable(userId, apiKey);
         apiKey.setDeleted(true);
         apiKeyRepository.save(apiKey);
         return true;
     }
 
     @Override
-    public AcceptProgram addProgramTo(ApiKey apiKey, String program, String description) {
+    public AcceptProgram addProgramTo(String userId, ApiKey apiKey, String program, String description)
+            throws IllegalAccessException {
+
+        if(program == null || program.length() == 0) {
+            throw new IllegalArgumentException("ProgramName is empty!");
+        }
         QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
+        checkAccessable(userId, apiKey);
 
         Predicate predicate = qAcceptProgram.apiKey.eq(apiKey)
                 .and(qAcceptProgram.program.equalsIgnoreCase(program))
@@ -81,12 +96,20 @@ public class ApiKeyServiceImpl implements ApiKeyService {
             acceptProgramRepository.save(acceptProgram);
             return acceptProgram;
         } else {
-            throw new IllegalArgumentException("Program is already accepted!");
+            throw new IllegalArgumentException(PERMISSION_NOT_MATCHED);
         }
     }
 
     @Override
-    public boolean removeProgramFrom(ApiKey apiKey, String programName) {
+    public AcceptProgram getAcceptProgram(int programId) {
+        return acceptProgramRepository.findOne(programId);
+    }
+
+    @Override
+    public boolean removeProgramFrom(String userId, ApiKey apiKey, String programName)
+            throws IllegalAccessException {
+        checkAccessable(userId, apiKey);
+
         QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
         Predicate predicate = qAcceptProgram.apiKey.eq(apiKey)
                 .and(qAcceptProgram.program.eq(programName))
@@ -102,15 +125,12 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
-    public boolean removeProgramFrom(ApiKey apiKey, int programId) {
+    public boolean removeProgramFrom(String userId, int programId) throws IllegalAccessException {
         AcceptProgram acceptProgram = acceptProgramRepository.findOne(programId);
-        if(acceptProgram == null ||
-                !acceptProgram.getApiKey().getId().equals(apiKey.getId())) {
-            throw new IllegalArgumentException("Program matched is not found!");
-        } else {
-            acceptProgram.setDeleted(true);
-            acceptProgramRepository.save(acceptProgram);
-        }
+        ApiKey apiKey = acceptProgram.getApiKey();
+        checkAccessable(userId, apiKey);
+        acceptProgram.setDeleted(true);
+        acceptProgramRepository.save(acceptProgram);
         return true;
     }
 
