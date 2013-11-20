@@ -1,9 +1,45 @@
-<div class="hero-unit">
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
-  <ul>
-      <li ng-repeat="thing in awesomeThings">{{thing}}</li>
-  </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
+<header>
+  <div id="header">
+    <h1><a href="/"><img src="/images/top_logo.gif" alt="대성정보시스템" /></a></h1>
+    <div ng-include="'views/statics/header.html'"/>
+  </div>
+</header>
+
+<div id="wrap">
+  <div id="contents">
+    <div id="main">
+      <h2><img src="/images/tit_notice.gif" alt="��������" /></h2>
+      <div class="tableline"></div>
+      @{
+      Html.RenderAction("NoticeList");
+      }
+      <h1>'Allo, 'Allo!</h1>
+      <p>You now have</p>
+      <ul>
+        <li ng-repeat="thing in awesomeThings">{{thing}}</li>
+      </ul>
+      <p>installed.</p>
+      <h3>Enjoy coding! - Yeoman</h3>
+    </div>
+    <div id="login">
+      <form method="post" action="/Account/Login">
+        <div class="login_lt">
+          <div class="login_tit">통합인증로그인</div>
+          <div class="login_box"><input type="text" name="username" id="username" class="idpw"/></div>
+          <div class="login_box"><input type="text" name="password" id="password" class="idpw"/></div>
+        </div>
+        <div class="login_rt">
+          <div class="login_idsave">
+            <span><input type="checkbox" id="rememberMe" name="rememberMe"/></span>
+            <span>ID저장</span></div>
+          <div>
+            <input type="image" src="/images/btn_login.gif" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div ng-include="'views/statics/footer.html'">
 </div>

@@ -1,0 +1,27 @@
+﻿.menu {
+    
+}
+
+.editNotice {
+    background: url(images/list_btn_modify.gif) no-repeat top left;
+    display: block;
+    width: 27px;
+    height: 16px;
+    text-indent: -9999px; /* hides the link text */
+}
+
+.deleteNotice {
+    background: url(images/list_btn_del.gif) no-repeat top left;
+    display: block;
+    width: 27px;
+    height: 16px;
+    text-indent: -9999px; /* hides the link text */
+}
+
+.restoreNotice {
+    background: url(images/list_btn_show.gif) no-repeat top left;
+    display: block;
+    width: 27px;
+    height: 16px;
+    text-indent: -9999px; /* hides the link text */
+}

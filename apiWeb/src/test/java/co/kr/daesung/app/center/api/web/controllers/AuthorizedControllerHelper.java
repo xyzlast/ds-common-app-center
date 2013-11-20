@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.codec.Base64;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.DigestUtils;
@@ -119,7 +120,6 @@ public class AuthorizedControllerHelper {
     public static SecurityContext buildFormAuthentication(WebApplicationContext context, String username) throws Exception {
         UserDetailsService userDetailsService = (UserDetailsService) context
                 .getBean(BeanIds.USER_DETAILS_SERVICE);
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
