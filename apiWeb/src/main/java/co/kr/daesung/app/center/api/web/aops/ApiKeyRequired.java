@@ -7,5 +7,5 @@ package co.kr.daesung.app.center.api.web.aops;
  * Time: 8:41 AM
  * To change this template use File | Settings | File Templates.
  */
-public @interface AuthKeyCheck {
+public @interface ApiKeyRequired {
 }

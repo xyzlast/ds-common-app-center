@@ -189,6 +189,24 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public Page<NLeaderMessage> getNLeaderMessages(String apiKeyId, int pageIndex, int pageSize) {
+        ApiKey apiKey = apiKeyRepository.findOne(apiKeyId);
+        if(apiKey == null) {
+            throw new IllegalArgumentException("api key is not found!");
+        }
+        QNLeaderMessage qnLeaderMessage = QNLeaderMessage.nLeaderMessage;
+        Predicate predicate = qnLeaderMessage.apiKey.eq(apiKey);
+        PageRequest pageRequest = new PageRequest(pageIndex, pageSize, Sort.Direction.DESC, "createTime");
+        return nLeaderMessageRepository.findAll(predicate, pageRequest);
+    }
+
+    @Override
+    public Page<NLeaderMessage> getNLeaderMessages(int pageIndex, int pageSize) {
+        PageRequest pageRequest = new PageRequest(pageIndex, pageSize, Sort.Direction.DESC, "createTime");
+        return nLeaderMessageRepository.findAll(pageRequest);
+    }
+
+    @Override
     public int sendNLeaderMessagesFromQueue() {
         List<NLeaderMessage> nLeaderMessages = getNLeaderMessagesInQueue(false);
         int itemCount = messageSender.sendNLeaderMessages(nLeaderMessages);

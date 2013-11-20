@@ -76,6 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/address/**", "/Api/Address/**").anonymous()
                 .antMatchers("/api/apiKey/**").authenticated()
+                .antMatchers("/api/message/**").authenticated()
                 .antMatchers("/api/auth/**").authenticated()
             .and()
                 .addFilterAfter(digestAuthenticationFilter(), BasicAuthenticationFilter.class);

@@ -1,7 +1,12 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
 import org.springframework.mock.web.MockFilterConfig;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -57,16 +62,16 @@ public class AuthorizedControllerHelper {
 
     public static final String AUTH_HEADER = "Authorization";
 
-    public static final String getBasicAuthHeaderValue(String username, String password) throws Exception {
+    public static final String buildBasicAuthHeaderValue(String username, String password) throws Exception {
         String authHeaderFormat = "Basic ";
         String encodingRawData = String.format("%s:%s", username, password);
         String encodingData = authHeaderFormat + new String(Base64.encode(encodingRawData.getBytes("utf-8")));
         return encodingData;
     }
 
-    public static String getDigestAuthenticateion(MockMvc mvc, String username,
-                                                   String password,
-                                                   String uri, String method) throws Exception {
+    public static String buildDigestAuthenticateion(MockMvc mvc, String username,
+                                                    String password,
+                                                    String uri, String method) throws Exception {
         MvcResult mvcResult = null;
         if(method.equals("GET")) {
             mvcResult = mvc.perform(get(uri)).andDo(print()).andReturn();
@@ -109,6 +114,33 @@ public class AuthorizedControllerHelper {
                 String.format("response=\"%s\"", response);
 
         return clientRequest;
+    }
+
+    public static SecurityContext buildFormAuthentication(WebApplicationContext context, String username) throws Exception {
+        UserDetailsService userDetailsService = (UserDetailsService) context
+                .getBean(BeanIds.USER_DETAILS_SERVICE);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDetails.getPassword(),
+                userDetails.getAuthorities());
+        SecurityContext securityContext = new SecurityContext() {
+            private static final long serialVersionUID = 8611087650974958658L;
+            private Authentication authentication;
+
+            @Override
+            public void setAuthentication(Authentication authentication) {
+                this.authentication = authentication;
+            }
+
+            @Override
+            public Authentication getAuthentication() {
+                return this.authentication;
+            }
+        };
+        securityContext.setAuthentication(authToken);
+        return securityContext;
     }
 
     private static String calculateNonce() throws UnsupportedEncodingException {

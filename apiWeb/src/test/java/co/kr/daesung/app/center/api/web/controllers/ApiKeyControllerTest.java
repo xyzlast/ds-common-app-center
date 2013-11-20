@@ -30,22 +30,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.context.WebApplicationContext;
-
-import javax.transaction.Transaction;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -88,7 +76,7 @@ public class ApiKeyControllerTest {
     @Test
     public void getTempDataWithAuth() throws Exception {
         String uri = ApiKeyController.GET_TEMP_DATA;
-        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
+        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
         mvc.perform(get(uri)
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andExpect(status().isOk());
@@ -97,7 +85,7 @@ public class ApiKeyControllerTest {
     @Test
     public void testGenerateKey() throws Exception {
         String digestAuthenticateion = AuthorizedControllerHelper
-                .getDigestAuthenticateion(mvc, "ykyoon", "1234", ApiKeyController.API_API_KEY_GENERATE, "PUT");
+                .buildDigestAuthenticateion(mvc, "ykyoon", "1234", ApiKeyController.API_API_KEY_GENERATE, "PUT");
         MvcResult result = mvc.perform(put(ApiKeyController.API_API_KEY_GENERATE)
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andDo(MockMvcResultHandlers.print())
@@ -110,7 +98,7 @@ public class ApiKeyControllerTest {
     @Test
     public void testDelteKey() throws Exception {
         String uri = ApiKeyController.API_API_KEY_DELETE;
-        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "DELETE");
+        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "DELETE");
         MvcResult result = mvc.perform(delete(uri)
                 .param("apiKeyId", "ABC")
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
@@ -122,7 +110,7 @@ public class ApiKeyControllerTest {
     @Test
     public void testGetApiKeyList() throws Exception {
         String uri = ApiKeyController.API_API_KEY_LIST;
-        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
+        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
         MvcResult result = mvc.perform(get(uri)
                                         .param("pageIndex", "0")
                                         .param("pageSize", "10")
@@ -136,7 +124,7 @@ public class ApiKeyControllerTest {
     @Test
     public void testAddProgram() throws Exception {
         String uri = ApiKeyController.API_API_KEY_PROGRAM;
-        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "PUT");
+        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "PUT");
         MvcResult result = mvc.perform(put(uri)
                 .param("apiKeyId", apiKeyId)
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
@@ -149,7 +137,7 @@ public class ApiKeyControllerTest {
     @Test
     public void testGetPrograms() throws Exception {
         String uri = ApiKeyController.API_API_KEY_PROGRAMS;
-        String digestAuthenticateion = AuthorizedControllerHelper.getDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
+        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "GET");
         MvcResult result = mvc.perform(get(uri)
                 .param("apiKeyId", apiKeyId)
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))

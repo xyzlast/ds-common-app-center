@@ -1,5 +1,6 @@
 package co.kr.daesung.app.center.domain.entities.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -35,6 +36,7 @@ public class ApiKey {
     private boolean deleted;
     private long usedCount;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "apiKey", cascade = { CascadeType.ALL })
     private List<AcceptProgram> acceptPrograms = new ArrayList<>();
 

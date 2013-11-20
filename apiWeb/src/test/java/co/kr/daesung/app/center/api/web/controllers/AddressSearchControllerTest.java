@@ -12,7 +12,7 @@ import static org.hamcrest.core.IsNull.*;
 import static org.hamcrest.core.IsNot.*;
 import static org.junit.Assert.*;
 
-import co.kr.daesung.app.center.api.web.aops.AuthKeyCheckAdvice;
+import co.kr.daesung.app.center.api.web.aops.ApiKeyRequiredAdvice;
 import co.kr.daesung.app.center.api.web.configs.ControllerConfiguration;
 import co.kr.daesung.app.center.api.web.configs.SecurityConfiguration;
 import co.kr.daesung.app.center.api.web.vos.ResultData;
@@ -112,7 +112,7 @@ public class AddressSearchControllerTest {
         String contentString = result.getResponse().getContentAsString();
         ResultData resultData = objectMapper.readValue(contentString, ResultData.class);
         assertThat(resultData.isOk(), is(false));
-        assertThat(resultData.getMessage(), is(AuthKeyCheckAdvice.NOT_AUTHORIZED));
+        assertThat(resultData.getMessage(), is(ApiKeyRequiredAdvice.NOT_AUTHORIZED));
         System.out.println(result.getResponse().getContentAsString());
 
     }

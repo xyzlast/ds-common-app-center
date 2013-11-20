@@ -1,6 +1,7 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
-import co.kr.daesung.app.center.api.web.aops.AuthKeyCheck;
+import co.kr.daesung.app.center.api.web.aops.AllowCrossDomain;
+import co.kr.daesung.app.center.api.web.aops.ApiKeyRequired;
 import co.kr.daesung.app.center.api.web.aops.Jsonp;
 import co.kr.daesung.app.center.api.web.aops.ResultDataFormat;
 import co.kr.daesung.app.center.api.web.vos.AddressItem;
@@ -47,7 +48,8 @@ public class AddressSearchController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AuthKeyCheck
+    @ApiKeyRequired
+    @AllowCrossDomain
     public Object getSiDoList(HttpServletRequest request, HttpServletResponse response) {
         final List<SiDo> siDoList = service.getSiDoList();
         List<Map<String, String>> result =new ArrayList<>();
@@ -65,7 +67,8 @@ public class AddressSearchController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AuthKeyCheck
+    @ApiKeyRequired
+    @AllowCrossDomain
     public Object searchByJibeon(HttpServletRequest request, HttpServletResponse response,
                                String jibeonName, boolean mergeJibeon, int pageIndex, int pageSize) throws IOException {
 
@@ -77,7 +80,8 @@ public class AddressSearchController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AuthKeyCheck
+    @ApiKeyRequired
+    @AllowCrossDomain
     public Object searchByRoad(HttpServletRequest request, HttpServletResponse response,
                                String sidoNumber, boolean merge, String roadName, int pageIndex, int pageSize) {
         final List<BaseAddress> baseAddresses = service.searchByRoad(sidoNumber, roadName, merge, pageIndex, pageSize);
@@ -88,7 +92,8 @@ public class AddressSearchController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AuthKeyCheck
+    @ApiKeyRequired
+    @AllowCrossDomain
     public Object searchByBuildingName(HttpServletRequest request, HttpServletResponse response,
                                        String sidoNumber, String buildingName, int pageIndex, int pageSize) {
         if(buildingName == null || buildingName.length() < 3) {
@@ -102,7 +107,8 @@ public class AddressSearchController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AuthKeyCheck
+    @ApiKeyRequired
+    @AllowCrossDomain
     public Object getSiGunGuList(HttpServletRequest request, HttpServletResponse response, String sidoNumber) {
         final List<SiGunGu> siGunGuList = service.getSiGunGuList(sidoNumber);
         List<Map<String, String>> result = new ArrayList<>();

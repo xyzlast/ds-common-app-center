@@ -48,7 +48,6 @@ public class JsonpAdvice implements Ordered {
                 String callbackMethod = callbackMethods[0];
 
                 HttpServletResponse response = (HttpServletResponse) arguments[1];
-                response.addHeader("Access-Control-Allow-Origin", "*");
                 response.setContentType("application/javascript");
                 response.setCharacterEncoding("utf-8");
 

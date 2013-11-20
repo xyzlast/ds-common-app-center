@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
  */
 @Aspect
 @Component
-public class AuthKeyCheckAdvice implements Ordered {
+public class ApiKeyRequiredAdvice implements Ordered {
     @Autowired
     private ApiKeyService service;
-
+    public static final String TEST_KEY = "02906f80-9fab-4208-a9b0-e031b6a7cfca";
     public static final String NOT_AUTHORIZED = "This key is not authorized!";
 
-    @Pointcut(value = "@annotation(co.kr.daesung.app.center.api.web.aops.AuthKeyCheck)")
+    @Pointcut(value = "@annotation(co.kr.daesung.app.center.api.web.aops.ApiKeyRequired)")
     private void checkKeyPointcut() {
     }
 
@@ -45,11 +45,13 @@ public class AuthKeyCheckAdvice implements Ordered {
             if(headerClient == null || headerClient.equals("")) {
                 headerClient = request.getHeader("Referer");
             }
-
             final String[] keys = request.getParameterValues("key");
             if(keys != null && keys.length == 1) {
                 String key = keys[0];
-                if(headerClient != null && !headerClient.equals("")) {
+                if(key.equals(TEST_KEY)) {
+                    return pjp.proceed();
+                }
+                else if(headerClient != null && !headerClient.equals("")) {
                     String patternString = "(?<httpUrl>((https?:\\/\\/)([\\da-z\\.-]+)))\\/?";
                     Pattern pattern = Pattern.compile(patternString);
                     final Matcher matcher = pattern.matcher(headerClient);

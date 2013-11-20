@@ -25,6 +25,10 @@ public interface MessageService {
     NLeaderMessage addNLeaderMessageToQueue(String apiKey, String fromUserId, String toUserId, String title,
                                        String content, boolean force);
     List<NLeaderMessage> getNLeaderMessagesInQueue(boolean includeDuplicated);
+
+    Page<NLeaderMessage> getNLeaderMessages(String apiKeyId, int pageIndex, int pageSize);
+    Page<NLeaderMessage> getNLeaderMessages(int pageIndex, int pageSize);
+
     int sendNLeaderMessagesFromQueue();
 
     long makeAllToSent();

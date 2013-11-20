@@ -2,8 +2,8 @@ apply plugin: 'java'
 apply plugin : 'sonar-runner'
 
 ext {
-//    springVersion = '4.0.0.BUILD-SNAPSHOT'
-    springVersion = '3.2.5.RELEASE'
+    springVersion = '4.0.0.BUILD-SNAPSHOT'
+//    springVersion = '3.2.5.RELEASE'
     springDataVersion = '1.4.2.RELEASE'
     javaVersion = 1.7
     slf4jVersion = '1.7.2'
@@ -86,6 +86,7 @@ subprojects {
         compile "org.slf4j:jcl-over-slf4j:${rootProject.ext.slf4jVersion}"
         compile "org.slf4j:jul-to-slf4j:${rootProject.ext.slf4jVersion}"
         compile "org.slf4j:slf4j-api:${rootProject.ext.slf4jVersion}"
+        compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
         testCompile "junit:junit:4.11"
         testCompile "org.springframework:spring-test:${rootProject.ext.springVersion}"
         testCompile 'org.mockito:mockito-all:1.9.5'
