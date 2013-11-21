@@ -32,8 +32,7 @@ import java.util.Properties;
         hbmToDdl = HbmToDdl.NO_ACTION,
         packagesToScan = {"co.kr.daesung.app.center.domain.entities"},
         showSql = false)
-// @Import(EhCacheConfigurer.class)
-@EnableCaching(order = 0)
+@EnableCaching
 public class DomainConfiguration extends EhCacheConfigurer {
     @Autowired
     private Environment env;

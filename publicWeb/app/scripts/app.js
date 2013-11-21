@@ -6,8 +6,10 @@ var publicWebApp = angular.module('publicWebApp', [
   'ngSanitize'
 ])
   .config(function ($routeProvider, $httpProvider) {
-    $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    delete $httpProvider.defaults.headers.common['X-XSFR-TOKEN'];
+    $httpProvider.defaults.useXDomain = true;
+    $httpProvider.defaults.withCredentials = true;
 
     $routeProvider
       .when('/', {
@@ -21,4 +23,7 @@ var publicWebApp = angular.module('publicWebApp', [
       .otherwise({
         redirectTo: '/'
       });
-  });
+});
+
+var baseUrl = "http://localhost:8080/apiWeb"
+$.support.cors = true;

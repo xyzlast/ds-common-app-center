@@ -1,5 +1,6 @@
 package co.kr.daesung.app.center.api.web.configs;
 
+import co.kr.daesung.app.center.api.web.filters.OptionsHeadersFilter;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -33,6 +34,7 @@ public class WebXmlInitializer extends AbstractAnnotationConfigDispatcherServlet
     protected Filter[] getServletFilters() {
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
-        return new Filter[] { characterEncodingFilter };
+        OptionsHeadersFilter optionsHeadersFilter = new OptionsHeadersFilter();
+        return new Filter[] { optionsHeadersFilter, characterEncodingFilter };
     }
 }

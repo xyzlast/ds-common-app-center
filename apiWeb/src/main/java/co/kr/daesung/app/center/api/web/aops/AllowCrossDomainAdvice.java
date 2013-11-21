@@ -27,13 +27,14 @@ public class AllowCrossDomainAdvice {
 
     @After(value = "allowCrossDomainPointcut()")
     public void setCrossDomainResponseHeader(JoinPoint thisJoinPoint) {
-        Object[] arguments = thisJoinPoint.getArgs();
-        if(arguments.length >= 2 && arguments[0] instanceof HttpServletRequest &&
-                arguments[1] instanceof HttpServletResponse) {
-            HttpServletResponse response = (HttpServletResponse) arguments[1];
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Methods", "'DELETE', 'PUT', 'GET', 'POST'");
-            response.addHeader("Access-Control-Max-Age", "1000");
-        }
+//        Object[] arguments = thisJoinPoint.getArgs();
+//        if(arguments.length >= 2 && arguments[0] instanceof HttpServletRequest &&
+//                arguments[1] instanceof HttpServletResponse) {
+//            HttpServletResponse response = (HttpServletResponse) arguments[1];
+//            response.addHeader("Access-Control-Allow-Origin", "*");
+//            response.addHeader("Access-Control-Allow-Methods", "GET, DELETE, POST, PUT");
+//            response.addHeader("Access-Control-Max-Age", "1000");
+//            response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+//        }
     }
 }

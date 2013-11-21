@@ -1,10 +1,8 @@
 package co.kr.daesung.app.center.api.web.configs;
 
-import co.kr.daesung.app.center.api.web.auth.CommonAppUserDetailService;
-import co.kr.daesung.app.center.api.web.auth.StringEncrypter;
-import co.kr.daesung.app.center.api.web.auth.UserInfoHelper;
-import co.kr.daesung.app.center.api.web.auth.UserInfoHelperImpl;
+import co.kr.daesung.app.center.api.web.auth.*;
 import co.kr.daesung.app.center.domain.services.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -55,7 +53,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
         digestAuthenticationFilter.setAuthenticationEntryPoint(digestAuthenticationEntryPoint());
         digestAuthenticationFilter.setUserDetailsService(userDetailsServiceBean());
-
         return digestAuthenticationFilter;
     }
 
@@ -68,25 +65,51 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return entryPoint;
     }
 
+    @Bean
+    public AjaxAwareLoginUrlAuthenticationEntryPoint formAuthEntryPoint() {
+        AjaxAwareLoginUrlAuthenticationEntryPoint entryPoint = new AjaxAwareLoginUrlAuthenticationEntryPoint("/loginprocessing");
+        return entryPoint;
+    }
+
+    @Bean
+    public LoginProcessHandler loginProcessHandler() {
+        LoginProcessHandler loginProcessHandler = new LoginProcessHandler();
+        loginProcessHandler.setObjectMapper(objectMapper());
+        return loginProcessHandler;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.exceptionHandling().authenticationEntryPoint(digestAuthenticationEntryPoint())
+
+        http
+                .exceptionHandling().authenticationEntryPoint(formAuthEntryPoint())
              .and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/api/notice/list").anonymous()
                 .antMatchers("/api/address/**", "/Api/Address/**").anonymous()
                 .antMatchers("/api/apiKey/**").authenticated()
                 .antMatchers("/api/message/**").authenticated()
                 .antMatchers("/api/auth/**").authenticated()
             .and()
                 .addFilterAfter(digestAuthenticationFilter(), BasicAuthenticationFilter.class);
-
-
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean

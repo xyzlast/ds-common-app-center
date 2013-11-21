@@ -77,6 +77,7 @@ public class NoticeServiceImplTest {
     private Notice writeNotice() {
         String title = "TITLE";
         String content = "CONTENT";
+
         Notice notice = noticeService.write(USER_ID, title, content, false);
         assertThat(notice, is(not(nullValue())));
         assertThat(notice.getWriter(), is(USER_ID));

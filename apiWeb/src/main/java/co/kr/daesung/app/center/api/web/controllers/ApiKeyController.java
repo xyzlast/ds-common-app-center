@@ -56,7 +56,6 @@ public class ApiKeyController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AllowCrossDomain
     public Object getApiKeyList(HttpServletRequest request, HttpServletResponse response, int pageIndex, int pageSize) {
         String username = request.getUserPrincipal().getName();
         final Page<ApiKey> apiKeys = apiKeyService.getApiKeys(username, pageIndex, pageSize);
@@ -71,7 +70,6 @@ public class ApiKeyController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AllowCrossDomain
     public Object generateApiKey(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getUserPrincipal().getName();
         ApiKey apiKey = apiKeyService.generateNewKey(username);
@@ -82,7 +80,6 @@ public class ApiKeyController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AllowCrossDomain
     public Object deleteApiKey(HttpServletRequest request, HttpServletResponse response, String apiKeyId)
             throws IllegalAccessException {
         Boolean result = apiKeyService.deleteKey(request.getUserPrincipal().getName(), apiKeyId);
@@ -93,7 +90,6 @@ public class ApiKeyController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AllowCrossDomain
     public Object getPrograms(HttpServletRequest request, HttpServletResponse response, String apiKeyId) {
         return apiKeyService.getAcceptPrograms(apiKeyId);
     }
@@ -102,7 +98,6 @@ public class ApiKeyController {
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AllowCrossDomain
     public Object addProgram(HttpServletRequest request, HttpServletResponse response,
                              String apiKeyId, String programName, String programDescription) throws IllegalAccessException {
         ApiKey apiKey = apiKeyService.getApiKey(apiKeyId);

@@ -25,7 +25,6 @@ describe('Controller: MessagesCtrl', function() {
         }
       );
       httpBackend = $httpBackend;
-      httpBackend.expectGET('http://localhost:8080/apiWeb/api/public/crew/list?key=123&pageIndex=0&pageSize=10');
       MessagesCtrl = $controller('MessagesCtrl', {
           $scope: scope,
           $http: $http
