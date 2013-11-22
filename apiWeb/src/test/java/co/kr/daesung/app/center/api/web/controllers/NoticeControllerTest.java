@@ -3,8 +3,8 @@ package co.kr.daesung.app.center.api.web.controllers;
 /**
  * Created with IntelliJ IDEA.
  * User: ykyoon
- * Date: 11/18/13
- * Time: 6:09 PM
+ * Date: 11/21/13
+ * Time: 2:26 AM
  * To change this template use File | Settings | File Templates.
  */
 import static org.hamcrest.core.Is.*;
@@ -27,22 +27,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { DomainConfiguration.class, SecurityConfiguration.class, ControllerConfiguration.class })
+@ContextConfiguration(classes = {DomainConfiguration.class, SecurityConfiguration.class, ControllerConfiguration.class})
 @WebAppConfiguration
-public class AuthControllerTest {
+public class NoticeControllerTest {
     @Autowired
     private WebApplicationContext context;
-    private MockMvc mvc;
-    private static final String USER_NAME = "ykyoon";
-    private static final String PASSWORD = "1234";
     @Autowired
     private ObjectMapper objectMapper;
+    private MockMvc mvc;
 
     @Before
     public void setUp() throws Exception {
@@ -50,15 +52,16 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void getUserInfo() throws Exception {
-        String authString = AuthorizedControllerHelper
-                .buildDigestAuthenticateion(mvc, USER_NAME, PASSWORD, AuthController.API_AUTH_USERINFO, "GET");
-        MvcResult result = mvc.perform(get(AuthController.API_AUTH_USERINFO).header(AuthorizedControllerHelper.AUTH_HEADER, authString))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
+    public void getNotices() throws Exception {
+        MvcResult result = mvc.perform(get("/api/notice/list")
+                .param("pageIndex", "0")
+                .param("pageSize", "10"))
+           .andDo(print())
+           .andExpect(status().isOk())
+           .andReturn();
+
         ResultData r = objectMapper.readValue(result.getResponse().getContentAsString(), ResultData.class);
         assertThat(r.isOk(), is(true));
-        assertThat(r.getData(), is(not(nullValue())));
     }
+
 }

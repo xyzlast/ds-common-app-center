@@ -123,9 +123,9 @@ public class ApiKeyControllerTest {
 
     @Test
     public void testAddProgram() throws Exception {
-        String uri = ApiKeyController.API_API_KEY_PROGRAM;
+        String uri = ApiKeyController.API_API_KEY_PROGRAM_ADD;
         String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "PUT");
-        MvcResult result = mvc.perform(put(uri)
+        MvcResult result = mvc.perform(post(uri)
                 .param("apiKeyId", apiKeyId)
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andDo(MockMvcResultHandlers.print())

@@ -1,13 +1,11 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
-import co.kr.daesung.app.center.api.web.aops.AllowCrossDomain;
 import co.kr.daesung.app.center.api.web.aops.ResultDataFormat;
 import co.kr.daesung.app.center.domain.entities.auth.User;
 import co.kr.daesung.app.center.domain.services.UserService;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,49 +27,64 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 public class LoginController {
+    public static final String API_LOGIN = "/api/login";
+    public static final String API_LOGOUT = "/api/logout";
     @Autowired
-    private org.springframework.security.authentication.AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value="/api/login", method = {RequestMethod.GET, RequestMethod.OPTIONS})
+    @RequestMapping(value= API_LOGIN, method = {RequestMethod.GET, RequestMethod.OPTIONS})
     @ResponseBody
     @ResultDataFormat
     public Object getAuthenticationStatus() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && !auth.getName().equals("anonymousUser") && auth.isAuthenticated()) {
-            return new LoginStatus(true, auth.getName());
+            User user = userService.findByUsername(auth.getName());
+            return new LoginStatus(true, auth.getName(), user.getName());
         } else {
-            return new LoginStatus(false, null);
+            return new LoginStatus(false, null, null);
         }
     }
 
-    @RequestMapping(value="/api/login", method = RequestMethod.POST)
+    @RequestMapping(value= API_LOGIN, method = RequestMethod.POST)
     @ResponseBody
     @ResultDataFormat
     public Object login(@RequestParam("username") String username, @RequestParam("password") String password) {
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-            User details = userService.findByUsername(username);
-            token.setDetails(details);
+            User user = userService.findByUsername(username);
+            token.setDetails(user);
             Authentication auth = authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            return new LoginStatus(auth.isAuthenticated(), auth.getName());
+            return new LoginStatus(auth.isAuthenticated(), user.getUsername(), user.getName());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new LoginStatus(false, null);
+            return new LoginStatus(false, null, null);
         }
+    }
+
+    @RequestMapping(value = API_LOGOUT)
+    @ResponseBody
+    @ResultDataFormat
+    public Object logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate();
+        }
+        SecurityContextHolder.clearContext();
+        return new LoginStatus(false, null, null);
     }
 
     @Getter
     public class LoginStatus {
         private final boolean isAuthenticated;
         private final String username;
-        public LoginStatus(boolean loggedIn, String username) {
+        private final String name;
+        public LoginStatus(boolean loggedIn, String username, String name) {
             this.isAuthenticated = loggedIn;
             this.username = username;
+            this.name = name;
         }
     }
-
 }

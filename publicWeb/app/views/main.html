@@ -1,65 +1,51 @@
 <header>
   <div id="header">
     <h1><a href="/"><img src="/images/top_logo.gif" alt="대성정보시스템" /></a></h1>
-    <div ng-include="'views/statics/header.html'"/>
+    <div ng-show="principal.authenticated" class="name">
+      <span class="b">{{principal.name}}</span>님이 로그인하셨습니다.
+    </div>
+    <div id="gnb">
+      <ul>
+        <li>
+          <a href="javascript:;" ng-click="changeMenu('notices');">
+            <img role="menu1" class="menu" src="{{menuButtons[0]}}" alt="HOME"/>
+          </a>
+        </li>
+        <li ng-show="principal.authenticated">
+          <a href="javascript:;" ng-click="changeMenu('apikey');">
+            <img role="menu2" class="menu" src="{{menuButtons[1]}}" alt="인증키 관리"/>
+          </a>
+        </li>
+        <li ng-show="principal.authenticated">
+          <a href="javascript:;" ng-click="changeMenu('apilist');">
+            <img role="menu3" class="menu" src="{{menuButtons[2]}}" alt="오픈 API"/>
+          </a>
+        </li>
+
+      </ul>
+      <div class="/admin">
+        <a href="admin"><img src="/images/menu_admin.gif" alt="관리자" /></a>
+      </div>
+    </div>
   </div>
 </header>
 
 <div id="wrap">
   <div id="contents">
     <div id="main">
-      <h2><img src="/images/tit_notice.gif" alt="공지사항" /></h2>
-      <div class="tableline"></div>
-
-      <div id="Notices">
-        <table summary="공지사항리스트" id="notice">
-          <caption>공지사항리스트</caption>
-          <tbody ng-repeat="m in notices">
-            <tr>
-              <td class="noti title">
-                <img ng-show="m.top" src="/images/noti_icon.gif" alt="NOTICE" />
-                <a href="javascript:;" ng-click="toggleContent(m);">{{m.title}}</a>
-              </td>
-              <td class="noti date">
-                {{m.createTime | date:'yyyy-MM-dd'}}
-              </td>
-            </tr>
-            <tr ng-show="m.show">
-              <td colspan="2" class="view">
-                {{m.content}}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div id="paging">
-        <span><a href="#"><img src="/images/page_prev2.gif" ng-click="loadNotices(pageIndex - 10);"/></a></span>
-        <span><a href="#"><img src="/images/page_prev1.gif" ng-click="loadNotices(pageIndex - 5)"/></a></span>
-        <a ng-repeat="page in pages" href="javascript:;" ng-click="loadNotices(page-1);">{{page}}</a>
-        <span><a href="#"><img src="/images/page_next1.gif" ng-click="loadNotices(pageIndex + 5)"/></a></span>
-        <span><a href="#"><img src="/images/page_next2.gif" ng-click="loadNotices(pageIndex + 10)"/></a></span>
-      </div>
-    </div>
-
-    <div id="login">
-      <div class="login_lt">
-        <div class="login_tit">통합인증로그인</div>
-        <div class="login_box"><input type="text" name="username" id="username" class="idpw" ng-model="username"/></div>
-        <div class="login_box"><input type="text" name="password" id="password" class="idpw" ng-model="password"/></div>
-      </div>
-      <div class="login_rt">
-        <div class="login_idsave">
-          <span><input type="checkbox" id="rememberMe" name="rememberMe"/></span>
-          <span>ID저장</span></div>
-        <div>
-          <input type="button" ng-click="login();" value="로그인"/>
-          <input type="button" ng-click="getApiKeyList();" value="API KEY LISTUP"/>
-          <!--<input type="image" src="/images/btn_login.gif" ng-click="login();" />-->
+      <ng-switch on="location">
+        <div ng-switch-when="notices">
+          <notices></notices>
         </div>
-      </div>
+        <div ng-switch-when="apikey">
+          <apikey></apikey>
+        </div>
+        <div ng-switch-when="apilist">
+          <apilist></apilist>
+        </div>
+      </ng-switch>
     </div>
-
+    <login/>
   </div>
 </div>
 

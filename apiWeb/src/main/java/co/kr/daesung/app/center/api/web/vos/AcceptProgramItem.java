@@ -16,7 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AcceptProgramItem {
-
+    private int id;
     private String program;
     private String description;
     private Date createTime;
@@ -28,6 +28,7 @@ public class AcceptProgramItem {
     }
 
     public AcceptProgramItem(AcceptProgram program) {
+        id = program.getId();
         this.program = program.getProgram();
         description = program.getDescription();
         createTime = program.getCreateTime();

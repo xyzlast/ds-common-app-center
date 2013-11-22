@@ -1,10 +1,8 @@
 'use strict';
 
 describe('Controller: MessagesCtrl', function() {
-  // load the controller's module
   beforeEach(module('publicWebApp'));
   var MessagesCtrl, scope, httpBackend;
-  // Initialize the controller and a mock scope
   beforeEach(
     inject(function($controller, $httpBackend, $http) {
       scope = {};

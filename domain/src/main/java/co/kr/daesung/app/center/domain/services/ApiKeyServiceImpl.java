@@ -135,6 +135,19 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
+    public boolean removeProgramFrom(String userId, String apiKeyId, int[] programIds) throws IllegalAccessException {
+        ApiKey apiKey = apiKeyRepository.findOne(apiKeyId);
+        checkAccessable(userId, apiKey);
+
+        for(int programId : programIds) {
+            final AcceptProgram one = acceptProgramRepository.findOne(programId);
+            one.setDeleted(true);
+            acceptProgramRepository.save(one);
+        }
+        return true;
+    }
+
+    @Override
     @Transactional
     public boolean isAcceptedKey(ApiKey apiKey, String program) {
         QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;

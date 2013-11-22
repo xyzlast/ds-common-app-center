@@ -1,6 +1,5 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
-import co.kr.daesung.app.center.api.web.aops.AllowCrossDomain;
 import co.kr.daesung.app.center.api.web.aops.Jsonp;
 import co.kr.daesung.app.center.api.web.aops.ResultDataFormat;
 import co.kr.daesung.app.center.api.web.auth.UserInfoHelper;
@@ -40,7 +39,8 @@ public class ApiKeyController {
     public static final String API_API_KEY_GENERATE = "/api/apiKey/generate";
     public static final String API_API_KEY_DELETE = "/api/apiKey/delete";
     public static final String API_API_KEY_PROGRAMS = "/api/apiKey/programs";
-    public static final String API_API_KEY_PROGRAM = "/api/apiKey/program";
+    public static final String API_API_KEY_PROGRAM_ADD = "/api/apiKey/program/add";
+    public static final String API_API_KEY_PROGRAM_DELETE = "/api/apiKey/program/delete";
 
     @Autowired
     private ApiKeyService apiKeyService;
@@ -61,22 +61,24 @@ public class ApiKeyController {
         final Page<ApiKey> apiKeys = apiKeyService.getApiKeys(username, pageIndex, pageSize);
         List<ApiKeyItem> result = new ArrayList<>();
         for(ApiKey apiKey : apiKeys) {
-            result.add(new ApiKeyItem(apiKey));
+            final List<AcceptProgram> acceptPrograms = apiKeyService.getAcceptPrograms(apiKey.getId());
+            result.add(new ApiKeyItem(apiKey, acceptPrograms));
         }
         return result;
     }
 
-    @RequestMapping(value = API_API_KEY_GENERATE, method = RequestMethod.PUT)
+    @RequestMapping(value = API_API_KEY_GENERATE, method = RequestMethod.POST)
     @ResponseBody
     @ResultDataFormat
     @Jsonp
     public Object generateApiKey(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getUserPrincipal().getName();
         ApiKey apiKey = apiKeyService.generateNewKey(username);
-        return new ApiKeyItem(apiKey);
+        final List<AcceptProgram> acceptPrograms = apiKeyService.getAcceptPrograms(apiKey.getId());
+        return new ApiKeyItem(apiKey, acceptPrograms);
     }
 
-    @RequestMapping(value = API_API_KEY_DELETE, method = RequestMethod.DELETE)
+    @RequestMapping(value = API_API_KEY_DELETE, method = RequestMethod.POST)
     @ResponseBody
     @ResultDataFormat
     @Jsonp
@@ -94,7 +96,7 @@ public class ApiKeyController {
         return apiKeyService.getAcceptPrograms(apiKeyId);
     }
 
-    @RequestMapping(value = API_API_KEY_PROGRAM, method = RequestMethod.PUT)
+    @RequestMapping(value = API_API_KEY_PROGRAM_ADD, method = RequestMethod.POST)
     @ResponseBody
     @ResultDataFormat
     @Jsonp
@@ -105,14 +107,14 @@ public class ApiKeyController {
                 apiKey, programName, programDescription);
     }
 
-    @RequestMapping(value = API_API_KEY_PROGRAM, method = RequestMethod.DELETE)
+    @RequestMapping(value = API_API_KEY_PROGRAM_DELETE, method = RequestMethod.POST)
     @ResponseBody
     @ResultDataFormat
     @Jsonp
-    @AllowCrossDomain
     public Object deleteProgram(HttpServletRequest request, HttpServletResponse response,
-                                int programId) throws IllegalAccessException {
-        apiKeyService.removeProgramFrom(request.getUserPrincipal().getName(), programId);
-        return apiKeyService.getAcceptProgram(programId);
+                                String apiKeyId,
+                                int[] programIds) throws IllegalAccessException {
+        return Boolean.valueOf(apiKeyService
+                .removeProgramFrom(request.getUserPrincipal().getName(), apiKeyId, programIds));
     }
 }

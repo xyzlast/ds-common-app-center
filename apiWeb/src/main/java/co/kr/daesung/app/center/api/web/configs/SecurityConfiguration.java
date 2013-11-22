@@ -56,14 +56,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return digestAuthenticationFilter;
     }
 
-    @Bean
-    public DigestAuthenticationEntryPoint digestAuthenticationEntryPoint() {
-        DigestAuthenticationEntryPoint entryPoint = new DigestAuthenticationEntryPoint();
-        entryPoint.setRealmName("ykyoon");
-        entryPoint.setKey("xyzlast");
-        entryPoint.setNonceValiditySeconds(99999);
-        return entryPoint;
-    }
 
     @Bean
     public AjaxAwareLoginUrlAuthenticationEntryPoint formAuthEntryPoint() {
@@ -84,11 +76,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return objectMapper;
     }
 
+    @Bean
+    public DigestAuthenticationEntryPoint digestAuthenticationEntryPoint() {
+        DigestAuthenticationEntryPoint entryPoint = new DigestAuthenticationEntryPoint();
+        entryPoint.setRealmName("ykyoon");
+        entryPoint.setKey("xyzlast");
+        entryPoint.setNonceValiditySeconds(99999);
+        return entryPoint;
+    }
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
-                .exceptionHandling().authenticationEntryPoint(formAuthEntryPoint())
+                .exceptionHandling().authenticationEntryPoint(digestAuthenticationEntryPoint())
              .and()
                 .csrf().disable()
                 .authorizeRequests()

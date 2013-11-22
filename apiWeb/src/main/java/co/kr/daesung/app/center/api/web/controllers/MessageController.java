@@ -1,6 +1,5 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
-import co.kr.daesung.app.center.api.web.aops.AllowCrossDomain;
 import co.kr.daesung.app.center.api.web.aops.ApiKeyRequired;
 import co.kr.daesung.app.center.api.web.aops.Jsonp;
 import co.kr.daesung.app.center.api.web.aops.ResultDataFormat;
@@ -38,7 +37,6 @@ public class MessageController {
     @Jsonp
     @ResponseBody
     @ApiKeyRequired
-    @AllowCrossDomain
     public Object addMessageForCrewMessage(HttpServletRequest request, HttpServletResponse response,
                                            String key,
                                            String fromUser, String toUser,
@@ -51,7 +49,6 @@ public class MessageController {
     @Jsonp
     @ResponseBody
     @ApiKeyRequired
-    @AllowCrossDomain
     public Object addMessageForNLeader(HttpServletRequest request, HttpServletResponse response,
                                        String key,
                                        String fromUser, String toUser, String title, String content, boolean force) {
@@ -63,7 +60,6 @@ public class MessageController {
     @Jsonp
     @ResponseBody
     @ApiKeyRequired
-    @AllowCrossDomain
     public Object getCrewMessagesStatus(HttpServletRequest request, HttpServletResponse response,
                                     String key, int pageIndex, int pageSize) {
         return messageService.getCrewMessages(pageIndex, pageSize).getContent();
@@ -74,7 +70,6 @@ public class MessageController {
     @Jsonp
     @ResponseBody
     @ApiKeyRequired
-    @AllowCrossDomain
     public Object getNLeaderMessagesStatus(HttpServletRequest request, HttpServletResponse response,
                                            String key, int pageIndex, int pageSize) {
         return messageService.getNLeaderMessages(pageIndex, pageSize).getContent();

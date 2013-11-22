@@ -1,6 +1,5 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
-import co.kr.daesung.app.center.api.web.aops.AllowCrossDomain;
 import co.kr.daesung.app.center.api.web.aops.ResultDataFormat;
 import co.kr.daesung.app.center.domain.services.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ public class NoticeController {
     @RequestMapping(value = API_NOTICE_LIST)
     @ResultDataFormat
     @ResponseBody
-    @AllowCrossDomain
     public Object getNotices(HttpServletRequest request, HttpServletResponse response, int pageIndex, int pageSize) {
         return noticeService.getNotices(pageIndex, pageSize, false);
     }

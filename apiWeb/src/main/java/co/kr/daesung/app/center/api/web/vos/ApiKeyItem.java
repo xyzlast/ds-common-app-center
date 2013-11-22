@@ -1,10 +1,13 @@
 package co.kr.daesung.app.center.api.web.vos;
 
+import co.kr.daesung.app.center.domain.entities.auth.AcceptProgram;
 import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,14 +22,19 @@ public class ApiKeyItem {
     private String id;
     private long usedCount;
     private Date createTime;
-
+    private List<AcceptProgramItem> programs;
     public ApiKeyItem() {
 
     }
 
-    public ApiKeyItem(ApiKey apiKey) {
+    public ApiKeyItem(ApiKey apiKey, List<AcceptProgram> acceptPrograms) {
         id = apiKey.getId();
         usedCount = apiKey.getUsedCount();
         createTime = apiKey.getCreateTime();
+        programs = new ArrayList<>();
+
+        for(AcceptProgram program : acceptPrograms) {
+            programs.add(new AcceptProgramItem(program));
+        }
     }
 }

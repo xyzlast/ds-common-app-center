@@ -88,6 +88,5 @@ public class MessageControllerTest {
                 .andReturn();
         ResultData r = objectMapper.readValue(result.getResponse().getContentAsString(), ResultData.class);
         assertThat(r.getMessage(), r.isOk(), is(true));
-        assertThat(result.getResponse().getHeader("Access-Control-Allow-Origin"), is("*"));
     }
 }

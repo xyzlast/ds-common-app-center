@@ -1,6 +1,5 @@
 package co.kr.daesung.app.center.api.web.controllers;
 
-import co.kr.daesung.app.center.api.web.aops.AllowCrossDomain;
 import co.kr.daesung.app.center.api.web.aops.ApiKeyRequired;
 import co.kr.daesung.app.center.api.web.aops.Jsonp;
 import co.kr.daesung.app.center.api.web.aops.ResultDataFormat;
@@ -30,7 +29,6 @@ public class PublicController {
     @ResultDataFormat
     @Jsonp
     @ResponseBody
-    @AllowCrossDomain
     public Object getCrewMessagesStatus(HttpServletRequest request, HttpServletResponse response,
                                         String key, int pageIndex, int pageSize) {
         return messageService.getCrewMessages(pageIndex, pageSize).getContent();
@@ -40,7 +38,6 @@ public class PublicController {
     @ResultDataFormat
     @Jsonp
     @ResponseBody
-    @AllowCrossDomain
     public Object getNLeaderMessagesStatus(HttpServletRequest request, HttpServletResponse response,
                                            String key, int pageIndex, int pageSize) {
         return messageService.getNLeaderMessages(pageIndex, pageSize).getContent();
