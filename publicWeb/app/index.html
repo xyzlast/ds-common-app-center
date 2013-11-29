@@ -13,12 +13,7 @@
 
         <!-- build:css({.tmp,app}) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
-        <!--<link rel="stylesheet" href="styles/program.css"/>-->
-        <!--<link rel="stylesheet" href="styles/style.css"/>-->
-        <!--<link rel="stylesheet" href="styles/shCore.css"/>-->
-        <!--<link rel="stylesheet" href="styles/shCoreDefault.css"/>-->
-        <!--<link rel="stylesheet" href="styles/shThemeDefault.css"/>-->
-
+        <link rel="stylesheet" href="http://yandex.st/highlightjs/7.5/styles/default.min.css">
     <!-- endbuild -->
 </head>
   <body ng-app="publicWebApp">
@@ -82,6 +77,9 @@
         <script src="bower_components/angular-route/angular-route.js"></script>
         <!-- endbuild -->
 
+        <script src="http://yandex.st/highlightjs/7.5/highlight.min.js"></script>
+        <script src="bower_components/nicEdit/nicEdit.js"></script>
+
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
@@ -103,6 +101,10 @@
         <script src="scripts/directives/keys-directive.js"></script>
         <script src="scripts/directives/login-directive.js"></script>
         <script src="scripts/directives/navigation.js"></script>
+        <script src="scripts/services/navService.js"></script>
+        <script src="scripts/controllers/apis/dataformat.js"></script>
         <!-- endbuild -->
-</body>
+
+        <script>hljs.initHighlightingOnLoad();</script>
+  </body>
 </html>

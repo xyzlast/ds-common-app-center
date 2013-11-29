@@ -20,7 +20,7 @@ import java.util.Date;
 public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
     @Column(name = "isTop")
     private boolean top;
     private String title;

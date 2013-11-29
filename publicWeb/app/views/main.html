@@ -1,34 +1,45 @@
-<div class="jumbotron" style="text-align: left">
-  <p>대성 Open API 서비스는 개발에 있어서 사이트에서 각각 구축하던 공통의 Resource를 하나의 API로 구성하고, 개발 시간의 단축 및 프로세스의 표준화에 기여하고자 구축되었습니다.</p>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <div class="panel-title">대성 OPEN API 서비스</div>
+  </div>
+  <div class="panel-body">
+개발에 있어서 사이트에서 각각 구축하던 공통의 Resource를 하나의 API로 구성하고, 개발 시간의 단축 및 프로세스의 표준화에 기여하고자 구축되었습니다.
+  </div>
 </div>
-<h3>공지사항</h3>
-<table class="table table-condensed">
-  <tbody ng-repeat="m in notices">
-  <tr>
-    <td class="noti title">
-      <img ng-show="m.top" src="/images/noti_icon.gif" alt="NOTICE" />
-      <a href="javascript:;" ng-click="showNotice(m);">{{m.title}}</a>
-    </td>
-    <td style="text-align: right">
-      {{m.createTime | date:'yyyy-MM-dd'}}
-    </td>
-  </tr>
-  <tr ng-show="m.show">
-    <td colspan="2" class="view">
-      {{m.content}}
-    </td>
-  </tr>
-  </tbody>
-</table>
-<div style="text-align: center">
-  <ul class="pagination">
-    <li><a href="javascript:;" ng-click="loadNotices(pageIndex - 5);">&laquo;</a></li>
-    <li ng-repeat="page in pages" ng-class="getPageClass(page);">
-      <a href="javascript:;" ng-click="loadNotices(page-1);">{{page}}</a>
-    </li>
-    <li><a href="javascript:;" ng-click="loadNotices(pageIndex + 5);">&raquo;</a></li>
-  </ul>
+
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <div class="panel-title">공지사항</div>
+  </div>
+  <table class="table table-condensed">
+    <tbody ng-repeat="m in notices">
+    <tr ng-click="showNotice(m);" style="cursor: pointer;">
+      <td class="noti title" style="padding-left:20px">
+        <img ng-show="m.top" src="/images/noti_icon.gif" alt="NOTICE" />
+        <a href="javascript:;">{{m.title}}</a>
+      </td>
+      <td style="text-align: right">
+        {{m.createTime | date:'yyyy-MM-dd'}}
+      </td>
+    </tr>
+    <tr ng-show="m.show">
+      <td colspan="2" class="view">
+        {{m.content}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div style="text-align: center">
+    <ul class="pagination">
+      <li><a href="javascript:;" ng-click="loadNotices(pageIndex - 5);">&laquo;</a></li>
+      <li ng-repeat="page in pages" ng-class="getPageClass(page);">
+        <a href="javascript:;" ng-click="loadNotices(page-1);">{{page}}</a>
+      </li>
+      <li><a href="javascript:;" ng-click="loadNotices(pageIndex + 5);">&raquo;</a></li>
+    </ul>
+  </div>
 </div>
+
 <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

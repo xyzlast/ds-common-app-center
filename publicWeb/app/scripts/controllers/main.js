@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('publicWebApp')
-  .controller('MainCtrl', function ($scope, authService, $http) {
+  .controller('MainCtrl', function ($scope, authService, navService, $http) {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     $scope.pageIndex = 0;
     $scope.pages = [1];
@@ -60,7 +60,7 @@ angular.module('publicWebApp')
         return "";
       }
     }
+    navService.changeMenu("index");
     $scope.loadNotices(0);
     var result = authService.checkLogin($scope);
-    console.log(result);
   });

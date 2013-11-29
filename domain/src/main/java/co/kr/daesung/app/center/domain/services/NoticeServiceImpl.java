@@ -6,6 +6,7 @@ import co.kr.daesung.app.center.domain.repo.board.NoticeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,12 +37,12 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public Page<Notice> getNotices(int pageIndex, int pageSize, boolean includeDelete) {
-        PageRequest pageRequest = new PageRequest(pageIndex, pageSize);
+        PageRequest pageRequest = new PageRequest(pageIndex, pageSize, Sort.Direction.DESC, "id");
         if(includeDelete) {
+            return noticeRepository.findAll(pageRequest);
+        } else {
             QNotice qNotice = QNotice.notice;
             return noticeRepository.findAll(qNotice.deleted.isFalse(), pageRequest);
-        } else {
-            return noticeRepository.findAll(pageRequest);
         }
     }
 
@@ -58,6 +59,23 @@ public class NoticeServiceImpl implements NoticeService {
         notice.setTitle(title);;
         notice.setContent(content);
         notice.setTop(isTop);
+        noticeRepository.save(notice);
+        return notice;
+    }
+
+    @Override
+    public Notice showNotice(int id) {
+        return updateNoticeDeleted(id, false);
+    }
+
+    @Override
+    public Notice hideNotice(int id) {
+        return updateNoticeDeleted(id, true);
+    }
+
+    private Notice updateNoticeDeleted(int id, boolean deleted) {
+        Notice notice = noticeRepository.findOne(id);
+        notice.setDeleted(deleted);
         noticeRepository.save(notice);
         return notice;
     }

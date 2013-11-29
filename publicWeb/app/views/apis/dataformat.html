@@ -1,0 +1,40 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">결과값 처리</h3>
+  </div>
+  <div class="panel-body">
+    <p>
+      Common API Service는 JSON 형태의 결과값을 가집니다. 그리고, 모든 Return값는 다음과 같은 데이터 Format을 갖습니다.
+    </p>
+    <pre><code>
+      {
+        IsOK : true / false,
+        Message : 'API Call 결과',
+        Data : [[JSON_OBJECT]]
+      }
+    </code></pre>
+    <ul>
+      <li>IsOK : API 결과에 대한 Boolean 값입니다. false인 경우, false에 대한 사유가 Message에 나옵니다.</li>
+      <li>Message : API 결과가 false인 경우에 사용자에게 보여주거나 처리할 message 입니다.</li>
+      <li>Data : JSON object로, API에 따라 다른 값이 반환됩니다. 개발자는 Data 값만을 이용해주면 됩니다.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">Result Data Sample (javascript></h4>
+  </div>
+  <div class="panel-body">
+    <pre><code>
+      var result = apiResult;
+      if(result.IsOK) {
+        var data = result.Data;
+        console.log("ID : " + data.Id);
+        console.log("list : " + data.list);
+      } else {
+        alert(result.Message);
+      }
+    </code></pre>
+  </div>
+</div>

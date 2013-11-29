@@ -1,1 +1,62 @@
-<p>This is the admin/notices view.</p>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">공지사항 관리</h3>
+  </div>
+  <div class="panel-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <td>ID</td>
+          <td>제목</td>
+          <td>작성자</td>
+          <td>표시여부</td>
+        </tr>
+      </thead>
+      <tbody ng-repeat="m in notices">
+      <tr>
+        <td>{{m.id}}</td>
+        <td class="noti title">
+          <img ng-show="m.top" src="/images/noti_icon.gif" alt="NOTICE" />
+          <a href="javascript:;" ng-click="showEditNoticeModal(m);">{{m.title}}</a>
+        </td>
+        <td>{{m.writer}}</td>
+        <td ng-show="m.deleted">
+          <button class="btn btn-warning btn-xs" ng-click="showNotice(m);">삭제됨</button>
+        </td>
+        <td ng-show="!m.deleted">
+          <button class="btn btn-success btn-xs" ng-click="hideNotice(m);">표시됨</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div style="text-align: center">
+      <ul class="pagination">
+        <li><a href="javascript:;" ng-click="loadNotices(pageIndex - 5);">&laquo;</a></li>
+        <li ng-repeat="page in pages" ng-class="getPageClass(page);">
+          <a href="javascript:;" ng-click="loadNotices(page-1);">{{page}}</a>
+        </li>
+        <li><a href="javascript:;" ng-click="loadNotices(pageIndex + 5);">&raquo;</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel"></h4>
+      </div>
+      <div class="modal-body">
+        <input type="checkbox"/> 공지로 선택 <br/>
+        <textarea id="noticeContent" name="content" style="width:535px;height:300px"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

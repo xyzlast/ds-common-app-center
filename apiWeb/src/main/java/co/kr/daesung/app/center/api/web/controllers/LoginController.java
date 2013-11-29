@@ -46,9 +46,13 @@ public class LoginController {
                 auth != null && !auth.getName().equals("anonymousUser") && auth.isAuthenticated()
             ) {
             User user = userService.findByUsername(auth.getName());
-            return new LoginStatus(true, auth.getName(), user.getName());
+            if(user != null) {
+                return new LoginStatus(true, auth.getName(), user.getName(), user.containAdminRole());
+            } else {
+                return new LoginStatus(false, null, null, false);
+            }
         } else {
-            return new LoginStatus(false, null, null);
+            return new LoginStatus(false, null, null, false);
         }
     }
 
@@ -62,9 +66,9 @@ public class LoginController {
             token.setDetails(user);
             Authentication auth = authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            return new LoginStatus(auth.isAuthenticated(), user.getUsername(), user.getName());
+            return new LoginStatus(auth.isAuthenticated(), user.getUsername(), user.getName(), user.containAdminRole());
         } catch (Exception e) {
-            return new LoginStatus(false, null, null);
+            return new LoginStatus(false, null, null, false);
         }
     }
 
@@ -77,18 +81,20 @@ public class LoginController {
             session.invalidate();
         }
         SecurityContextHolder.clearContext();
-        return new LoginStatus(false, null, null);
+        return new LoginStatus(false, null, null, false);
     }
 
     @Getter
     public class LoginStatus {
-        private final boolean isAuthenticated;
+        private final boolean authenticated;
         private final String username;
         private final String name;
-        public LoginStatus(boolean loggedIn, String username, String name) {
-            this.isAuthenticated = loggedIn;
+        private final boolean admin;
+        public LoginStatus(boolean loggedIn, String username, String name, boolean admin) {
+            this.authenticated = loggedIn;
             this.username = username;
             this.name = name;
+            this.admin = admin;
         }
     }
 }

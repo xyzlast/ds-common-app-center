@@ -14,6 +14,8 @@ angular.module('publicWebApp')
               if($location.path() != "/") {
                 $location.path("/");
               }
+            } else {
+
             }
           });
       }

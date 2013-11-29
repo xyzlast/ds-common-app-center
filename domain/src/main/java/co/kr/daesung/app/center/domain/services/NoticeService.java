@@ -15,6 +15,8 @@ public interface NoticeService {
     Page<Notice> getNotices(int pageIndex, int pageSize, boolean includeDelete);
     Notice getNotice(int id);
     Notice write(String userId, String title, String content, boolean isTop);
+    Notice showNotice(int id);
+    Notice hideNotice(int id);
     Notice edit(String userId, int id, String title, String content, boolean isTop);
     boolean deleteNotice(int id, boolean force);
 }

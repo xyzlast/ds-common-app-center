@@ -1,31 +1,39 @@
-<h3>API KEY</h3>
-<br/>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <div class="panel-title">API KEY 관리</div>
+  </div>
+  <div class="panel-body">
+    외부 Site 및 CS Application에서 API를 호출하기 위한 KEY를 관리할 수 있습니다.
+  </div>
+</div>
 
-<fieldset>
-  <legend>인증키 관리</legend>
-  <div>
-    <label for="keylist">API KEY LIST: </label>
-    <select id="keylist" ng-model="currentApiKey" ng-options="apiKey as apiKey.id for apiKey in apiKeys">
-    </select>
-    <div class="btn-group">
-      <button class="btn btn-success" ng-click="generateApiKey();">발급</button>
-      <button class="btn btn-danger" ng-click="deleteApiKey();">삭제</button>
+
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <div class="panel-title">
+      <div class="row">
+        <div class="col-md-8">
+          API LIST: <select id="keylist" ng-model="currentApiKey" ng-options="apiKey as apiKey.id for apiKey in apiKeys"/>
+        </div>
+        <div class="col-md-2">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="javascript:;" ng-click="generateApiKey();">새로운 Key 발급</a></li>
+              <li class="divider"></li>
+              <li><a href="javascript:;" ng-click="deleteApiKey();">선택된 Key 삭제</a></li>
+              <li><a href="javascript:;" ng-click="showAddProgramModal();">Key에 새로운 Program 추가</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</fieldset>
-<br/>
-<br/>
-
-<fieldset>
-  <legend>Program 관리</legend>
-  <form class="form-inline" style="text-align: right">
-    <label>이름</label>
-    <input type="text" ng-model="programName"/>
-    <label>설명</label>
-    <input type="text" ng-model="programDescription" />
-    <button class="btn btn-success">추가</button>
-  </form>
-  <br/>
+  <div class="panel-body">
+    선택된 Key를 이용해서 사용할 수 있는 Program 및 외부 Site는 다음과 같습니다.
+  </div>
   <table class="table">
     <thead>
     <tr>
@@ -47,4 +55,34 @@
     </tr>
     </tbody>
   </table>
-</fieldset>
+</div>
+
+<div class="modal fade" id="programModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">프로그램 추가</h4>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info">
+        해당 Key에서 허용할 Program을 넣어주세요. Web application의 경우, http://로 시작해야지 됩니다.
+        </div>
+        <form role="form">
+          <div class="form-group">
+            <label for="programName">Program 이름</label>
+            <input type="text" class="form-control" id="programName" ng-model="programName" placeholder="Program 이름을 넣어주세요">
+          </div>
+          <div class="form-group">
+            <label for="programDescription">Program 설명</label>
+            <input type="text" id="programDescription" ng-model="programDescription" class="form-control" placeholder="Program 설명을 넣어주세요."/>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="addProgram();">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

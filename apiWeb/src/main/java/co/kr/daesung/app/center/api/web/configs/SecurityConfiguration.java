@@ -40,6 +40,7 @@ import javax.servlet.Filter;
 @ComponentScan("co.kr.daesung.app.center.api.web.cors")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public static final String CORS_SUPPORT_FILTER = "corsSupportFilter";
+    public static final String ADMIN_ROLE = "ADMIN";
 
     @Autowired
     private ApplicationContext context;
@@ -80,13 +81,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //.exceptionHandling().authenticationEntryPoint(digestAuthenticationEntryPoint())
                 .exceptionHandling().authenticationEntryPoint(corsEntryPoint)
              .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/notice/list").anonymous()
-                .antMatchers("/api/address/**", "/Api/Address/**").anonymous()
+                .antMatchers("/api/admin/**").hasRole(ADMIN_ROLE)
                 .antMatchers("/api/apiKey/**").authenticated()
                 .antMatchers("/api/message/**").authenticated()
                 .antMatchers("/api/auth/**").authenticated()

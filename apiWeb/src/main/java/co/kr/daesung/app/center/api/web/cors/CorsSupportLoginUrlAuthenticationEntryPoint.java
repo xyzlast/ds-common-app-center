@@ -42,6 +42,6 @@ public class CorsSupportLoginUrlAuthenticationEntryPoint implements
      * @return
      */
     private boolean isPreflight(HttpServletRequest request) {
-        return "OPTIONS".equals(request.getMethod());
+        return request.getMethod().equals("OPTIONS");
     }
 }

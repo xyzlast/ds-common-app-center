@@ -17,6 +17,7 @@ import javax.persistence.*;
 @Setter
 @Table(name = "User")
 public class User {
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,5 +37,15 @@ public class User {
         } else {
             return rolesString.split(";");
         }
+    }
+
+    public boolean containAdminRole() {
+        String[] roles = getRoles();
+        for(String role : roles) {
+            if(role.toUpperCase().equals(ROLE_ADMIN)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

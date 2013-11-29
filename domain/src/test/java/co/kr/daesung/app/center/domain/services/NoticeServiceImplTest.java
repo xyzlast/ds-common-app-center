@@ -85,6 +85,30 @@ public class NoticeServiceImplTest {
     }
 
     @Test
+    public void testHideNotice() throws Exception {
+        Notice notice = writeNotice();
+        assertThat(notice.isDeleted(), is(false));
+        noticeService.hideNotice(notice.getId());
+
+        Notice updatedNotice = noticeService.getNotice(notice.getId());
+        assertThat(updatedNotice.isDeleted(), is(true));
+    }
+
+    @Test
+    public void testShowNotice() throws Exception {
+        Notice notice = writeNotice();
+        assertThat(notice.isDeleted(), is(false));
+        noticeService.hideNotice(notice.getId());
+
+        Notice updatedNotice = noticeService.getNotice(notice.getId());
+        assertThat(updatedNotice.isDeleted(), is(true));
+        noticeService.showNotice(notice.getId());
+
+        Notice shownNotice = noticeService.getNotice(notice.getId());
+        assertThat(shownNotice.isDeleted(), is(false));
+    }
+
+    @Test
     public void testWrite() throws Exception {
         writeNotice();
     }

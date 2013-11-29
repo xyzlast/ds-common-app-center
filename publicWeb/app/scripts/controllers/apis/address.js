@@ -1,10 +1,6 @@
 'use strict';
 
 angular.module('publicWebApp')
-  .controller('ApisAddressCtrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('ApisAddressCtrl', function ($scope, navService) {
+    navService.changeMenu('apilist');
   });

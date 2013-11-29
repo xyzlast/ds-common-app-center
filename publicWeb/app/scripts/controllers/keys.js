@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('publicWebApp')
-  .controller('KeysCtrl', function ($scope, $http, authService, $q) {
+  .controller('KeysCtrl', function ($scope, $http, authService, $q, navService) {
     $scope.apiKeys = [];
     $scope.currentApiKey = null;
     $scope.programName = "";
@@ -70,14 +70,16 @@ angular.module('publicWebApp')
       var config = {
         withCredentials: true
       }
-      $http.post(baseUrl + "/api/apiKey/program/add", jQuery.param(data), config)
-        .success(function(jsonResult){
-          if(jsonResult.IsOK) {
-            $scope.currentApiKey.programs.push(jsonResult.Data);
+      $q.all($http.post(baseUrl + "/api/apiKey/program/add", jQuery.param(data), config))
+        .then(function(httpResult){
+          var data = httpResult.data;
+          if(data.IsOK) {
+            $scope.currentApiKey.programs.push(data.Data);
             $scope.programName = "";
             $scope.programDescription = "";
+            $('#programModal').modal('hide');
           } else {
-            alert(jsonResult.Message);
+            alert(data.Message);
           }
         });
     };
@@ -104,8 +106,13 @@ angular.module('publicWebApp')
           }
           $scope.currentApiKey.programs = programs;
         });
-    }
+    };
 
+    $scope.showAddProgramModal = function() {
+      $('#programModal').modal();
+    };
+
+    navService.changeMenu('keys');
     var httpResult = authService.checkLogin($scope);
     httpResult.then(function() {
       $scope.load();
