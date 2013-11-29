@@ -16,12 +16,11 @@ module.exports = function(config) {
       'app/bower_components/angular-resource/angular-resource.js',
       'app/bower_components/angular-cookies/angular-cookies.js',
       'app/bower_components/angular-sanitize/angular-sanitize.js',
-      'app/bower_components/jquery/jquery.js',
+      'app/bower_components/angular-route/angular-route.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
-      //'test/spec/**/*.js'
-      'test/spec/controllers/login.js'
+      'test/spec/**/*.js'
     ],
 
     // list of files / patterns to exclude
@@ -49,9 +48,9 @@ module.exports = function(config) {
     // - IE (only Windows)
     browsers: ['Chrome'],
 
-    reporters: ['progress', 'junit', 'coverage'],
+
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: true
+    singleRun: false
   });
 };

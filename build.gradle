@@ -2,8 +2,9 @@ apply plugin: 'java'
 apply plugin : 'sonar-runner'
 
 ext {
-    springVersion = '4.0.0.BUILD-SNAPSHOT'
-//    springVersion = '3.2.5.RELEASE'
+//    springVersion = '4.0.0.BUILD-SNAPSHOT'
+    rawAddressDataFolder = '/'
+    springVersion = '3.2.5.RELEASE'
     springDataVersion = '1.4.2.RELEASE'
     javaVersion = 1.7
     slf4jVersion = '1.7.2'
@@ -12,11 +13,14 @@ ext {
 }
 
 if(!project.hasProperty('dir')) {
-    dir = '/'
+    rawAddressDataFolder = '/'
+} else {
+    rawAddressDataFolder = dir;
 }
 
 buildscript {
     repositories {
+        mavenLocal()
         maven { url 'http://repo.springsource.org/plugins-release' }
         jcenter()
     }
@@ -124,7 +128,7 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
     mainClassName = "co.kr.daesung.app.center.domain.utils.AddressPutterMain"
 
     run {
-        args "${dir}"
+        args "${rootProject.ext.rawAddressDataFolder}"
     }
 
     sourceSets {
@@ -141,7 +145,7 @@ configure(subprojects.findAll { it.name.endsWith('domain') }) {
         compile 'mysql:mysql-connector-java:5.1.22'
         compile 'com.jolbox:bonecp:0.7.1.RELEASE'
         compile 'com.google.guava:guava:14.0'
-        compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
+        // compile "com.microsoft.sqlserver.jdbc:sqljdbc:3.0"
         compile("org.springframework:spring-core:${rootProject.ext.springVersion}") {
             exclude(group: 'commons-logging', module: 'commons-logging')
         }

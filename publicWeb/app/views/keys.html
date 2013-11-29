@@ -1,0 +1,50 @@
+<h3>API KEY</h3>
+<br/>
+
+<fieldset>
+  <legend>인증키 관리</legend>
+  <div>
+    <label for="keylist">API KEY LIST: </label>
+    <select id="keylist" ng-model="currentApiKey" ng-options="apiKey as apiKey.id for apiKey in apiKeys">
+    </select>
+    <div class="btn-group">
+      <button class="btn btn-success" ng-click="generateApiKey();">발급</button>
+      <button class="btn btn-danger" ng-click="deleteApiKey();">삭제</button>
+    </div>
+  </div>
+</fieldset>
+<br/>
+<br/>
+
+<fieldset>
+  <legend>Program 관리</legend>
+  <form class="form-inline" style="text-align: right">
+    <label>이름</label>
+    <input type="text" ng-model="programName"/>
+    <label>설명</label>
+    <input type="text" ng-model="programDescription" />
+    <button class="btn btn-success">추가</button>
+  </form>
+  <br/>
+  <table class="table">
+    <thead>
+    <tr>
+      <td>이름</td>
+      <td>설명</td>
+      <td>호출횟수</td>
+      <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-show="currentApiKey.programs.length == 0">
+      <td colspan="4" style="text-align: center">등록된 프로그램이 없습니다.</td>
+    </tr>
+    <tr ng-repeat="program in currentApiKey.programs" ng-show="currentApiKey.programs.length != 0">
+      <td>{{program.program}}</td>
+      <td>{{program.description}}</td>
+      <td>{{program.usedCount}}</td>
+      <td><button class="btn btn-danger btn-xs" ng-click="deleteProgram(program);">삭제</button></td>
+    </tr>
+    </tbody>
+  </table>
+</fieldset>

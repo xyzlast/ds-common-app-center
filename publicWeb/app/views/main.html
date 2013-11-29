@@ -1,53 +1,45 @@
-<header>
-  <div id="header">
-    <h1><a href="/"><img src="/images/top_logo.gif" alt="대성정보시스템" /></a></h1>
-    <div ng-show="principal.authenticated" class="name">
-      <span class="b">{{principal.name}}</span>님이 로그인하셨습니다.
-    </div>
-    <div id="gnb">
-      <ul>
-        <li>
-          <a href="javascript:;" ng-click="changeMenu('notices');">
-            <img role="menu1" class="menu" src="{{menuButtons[0]}}" alt="HOME"/>
-          </a>
-        </li>
-        <li ng-show="principal.authenticated">
-          <a href="javascript:;" ng-click="changeMenu('apikey');">
-            <img role="menu2" class="menu" src="{{menuButtons[1]}}" alt="인증키 관리"/>
-          </a>
-        </li>
-        <li ng-show="principal.authenticated">
-          <a href="javascript:;" ng-click="changeMenu('apilist');">
-            <img role="menu3" class="menu" src="{{menuButtons[2]}}" alt="오픈 API"/>
-          </a>
-        </li>
-
-      </ul>
-      <div class="/admin">
-        <a href="admin"><img src="/images/menu_admin.gif" alt="관리자" /></a>
+<div class="jumbotron" style="text-align: left">
+  <p>대성 Open API 서비스는 개발에 있어서 사이트에서 각각 구축하던 공통의 Resource를 하나의 API로 구성하고, 개발 시간의 단축 및 프로세스의 표준화에 기여하고자 구축되었습니다.</p>
+</div>
+<h3>공지사항</h3>
+<table class="table table-condensed">
+  <tbody ng-repeat="m in notices">
+  <tr>
+    <td class="noti title">
+      <img ng-show="m.top" src="/images/noti_icon.gif" alt="NOTICE" />
+      <a href="javascript:;" ng-click="showNotice(m);">{{m.title}}</a>
+    </td>
+    <td style="text-align: right">
+      {{m.createTime | date:'yyyy-MM-dd'}}
+    </td>
+  </tr>
+  <tr ng-show="m.show">
+    <td colspan="2" class="view">
+      {{m.content}}
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div style="text-align: center">
+  <ul class="pagination">
+    <li><a href="javascript:;" ng-click="loadNotices(pageIndex - 5);">&laquo;</a></li>
+    <li ng-repeat="page in pages" ng-class="getPageClass(page);">
+      <a href="javascript:;" ng-click="loadNotices(page-1);">{{page}}</a>
+    </li>
+    <li><a href="javascript:;" ng-click="loadNotices(pageIndex + 5);">&raquo;</a></li>
+  </ul>
+</div>
+<div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">{{selectedNotice.title}}</h4>
       </div>
-    </div>
-  </div>
-</header>
-
-<div id="wrap">
-  <div id="contents">
-    <div id="main">
-      <ng-switch on="location">
-        <div ng-switch-when="notices">
-          <notices></notices>
-        </div>
-        <div ng-switch-when="apikey">
-          <apikey></apikey>
-        </div>
-        <div ng-switch-when="apilist">
-          <apilist></apilist>
-        </div>
-      </ng-switch>
-    </div>
-    <login/>
-  </div>
-</div>
-
-<div ng-include="'views/statics/footer.html'">
-</div>
+      <div class="modal-body" ng-bind-html="selectedNotice.content"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

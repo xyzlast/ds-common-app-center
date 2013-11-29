@@ -45,7 +45,9 @@ h3 {font-size:12px; color:#666666; font-weight:bold; margin-bottom:5px;}
 #wrap {width:980px; margin:0 auto;}
 #contents {width:978px; background-color:#fafafa; border:1px solid #ddd; display:inline-block}
 #contents_sub {width:978px; background-color:#fFF; border:1px solid #ddd; display:inline-block}
-#main {width:680px; float:left; padding:30px; background-color:#fff; border-right:1px solid #ddd;}
+#main { width:680px; float:left;
+    padding: 0px 15px 30px;
+    background-color:#fff; border-right:1px solid #ddd; }
 #sub {padding:30px;}
 #login {float:left; border-bottom:1px solid #ddd; padding:20px; width:197px;}
 #login .login_lt {float:left; margin-bottom:5px;}
@@ -74,7 +76,7 @@ h3 {font-size:12px; color:#666666; font-weight:bold; margin-bottom:5px;}
 #notice td input.subject {width:500px; height:18px; border:1px solid #ddd;}
 
 #keylist {width:100%; border:1px solid #ddd; height:68px; background:url(../images/key_bg.gif) repeat-x; text-align:center; line-height:68px; font-weight:bold; color:#333;}
-#keylist select {width:300px; color:#333; margin-left:10px; font-size:12px; height:20px; line-height:20px;}
+#keylist select {width:300px; color:#333; margin-left:10px; font-size:12px; line-height:20px;}
 
 #btn_rt {float:right; margin-top:5px; display:block;}
 #btn_ct {width:100%; text-align:center; margin-top:5px;}
@@ -153,4 +155,5 @@ legend {
     color:white;
     font-size:90%;
     text-align:left;
+    width:90%;
   }

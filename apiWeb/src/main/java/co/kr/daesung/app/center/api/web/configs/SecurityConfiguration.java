@@ -1,37 +1,30 @@
 package co.kr.daesung.app.center.api.web.configs;
 
 import co.kr.daesung.app.center.api.web.auth.*;
+import co.kr.daesung.app.center.api.web.cors.CorsSupportFilter;
+import co.kr.daesung.app.center.api.web.cors.CorsSupportLoginUrlAuthenticationEntryPoint;
 import co.kr.daesung.app.center.domain.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import javax.servlet.Filter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,9 +37,14 @@ import java.io.UnsupportedEncodingException;
 @EnableWebSecurity
 @Configuration
 @Slf4j
+@ComponentScan("co.kr.daesung.app.center.api.web.cors")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    public static final String CORS_SUPPORT_FILTER = "corsSupportFilter";
+
     @Autowired
     private ApplicationContext context;
+    @Autowired
+    private CorsSupportLoginUrlAuthenticationEntryPoint corsEntryPoint;
 
     @Bean
     public DigestAuthenticationFilter digestAuthenticationFilter() throws Exception {
@@ -54,13 +52,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         digestAuthenticationFilter.setAuthenticationEntryPoint(digestAuthenticationEntryPoint());
         digestAuthenticationFilter.setUserDetailsService(userDetailsServiceBean());
         return digestAuthenticationFilter;
-    }
-
-
-    @Bean
-    public AjaxAwareLoginUrlAuthenticationEntryPoint formAuthEntryPoint() {
-        AjaxAwareLoginUrlAuthenticationEntryPoint entryPoint = new AjaxAwareLoginUrlAuthenticationEntryPoint("/loginprocessing");
-        return entryPoint;
     }
 
     @Bean
@@ -89,7 +80,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .exceptionHandling().authenticationEntryPoint(digestAuthenticationEntryPoint())
+                //.exceptionHandling().authenticationEntryPoint(digestAuthenticationEntryPoint())
+                .exceptionHandling().authenticationEntryPoint(corsEntryPoint)
              .and()
                 .csrf().disable()
                 .authorizeRequests()
@@ -142,5 +134,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 return rawPassword.equals(encodedPassword);
             }
         };
+    }
+
+    @Bean(name = CORS_SUPPORT_FILTER)
+    public Filter corsSupportFilter() {
+        CorsSupportFilter corsSupportFilter = new CorsSupportFilter();
+        return corsSupportFilter;
     }
 }

@@ -38,9 +38,13 @@ public class LoginController {
     @RequestMapping(value= API_LOGIN, method = {RequestMethod.GET, RequestMethod.OPTIONS})
     @ResponseBody
     @ResultDataFormat
-    public Object getAuthenticationStatus() {
+    public Object getAuthenticationStatus(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && !auth.getName().equals("anonymousUser") && auth.isAuthenticated()) {
+        System.out.println(auth);
+        if ( session != null &&
+                auth != null && !auth.getName().equals("anonymousUser") && auth.isAuthenticated()
+            ) {
             User user = userService.findByUsername(auth.getName());
             return new LoginStatus(true, auth.getName(), user.getName());
         } else {

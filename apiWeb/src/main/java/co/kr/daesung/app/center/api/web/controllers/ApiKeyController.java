@@ -112,9 +112,8 @@ public class ApiKeyController {
     @ResultDataFormat
     @Jsonp
     public Object deleteProgram(HttpServletRequest request, HttpServletResponse response,
-                                String apiKeyId,
-                                int[] programIds) throws IllegalAccessException {
+                                int programId) throws IllegalAccessException {
         return Boolean.valueOf(apiKeyService
-                .removeProgramFrom(request.getUserPrincipal().getName(), apiKeyId, programIds));
+                .removeProgramFrom(request.getUserPrincipal().getName(), programId));
     }
 }
