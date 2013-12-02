@@ -12,7 +12,7 @@
     <div class="panel-title">공지사항</div>
   </div>
   <table class="table table-condensed">
-    <tbody ng-repeat="m in notices">
+    <tbody ng-repeat="m in pageItems">
     <tr ng-click="showNotice(m);" style="cursor: pointer;">
       <td class="noti title" style="padding-left:20px">
         <img ng-show="m.top" src="/images/noti_icon.gif" alt="NOTICE" />
@@ -29,15 +29,7 @@
     </tr>
     </tbody>
   </table>
-  <div style="text-align: center">
-    <ul class="pagination">
-      <li><a href="javascript:;" ng-click="loadNotices(pageIndex - 5);">&laquo;</a></li>
-      <li ng-repeat="page in pages" ng-class="getPageClass(page);">
-        <a href="javascript:;" ng-click="loadNotices(page-1);">{{page}}</a>
-      </li>
-      <li><a href="javascript:;" ng-click="loadNotices(pageIndex + 5);">&raquo;</a></li>
-    </ul>
-  </div>
+  <pagination></pagination>
 </div>
 
 <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

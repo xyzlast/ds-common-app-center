@@ -1,55 +1,27 @@
 'use strict';
 
 angular.module('publicWebApp')
-  .controller('AdminNoticesCtrl', function ($scope, $http, authService, $q) {
+  .controller('AdminNoticesCtrl', function ($scope, $http, authService, $q, pageList) {
     $scope.pageIndex = 0;
     $scope.pages = [1];
-    $scope.notices = [];
     $scope.selectedNotice = null;
+    $scope.modalTitle = '';
+    $scope.modalTop = false;
+
     var PAGE_SIZE = 10;
 
-    $scope.loadNotices = function(index) {
-      if(index < 0) {
-        alert('더이상 없습니다.');
-        return;
-      }
-      var config = {
-        withCredentials: true,
-        params : {
-          pageIndex : index,
-          pageSize : PAGE_SIZE
-        }
-      }
+    $scope.showWriteModal = function() {
+      $scope.selectedNotice = null;
+      $scope.modalTitle = '';
+      $scope.modalTop = false;
+      var nicEditor = nicEditors.findEditor('noticeContent');
+      nicEditor.setContent('');
+      $('#noticeModal').modal();
+    }
 
-      $q.all($http.get(baseUrl + "/api/admin/notice/list", config))
-        .then(function(httpResult) {
-          if(httpResult.status == 200) {
-            var jsonResult = httpResult.data;
-            if(jsonResult.IsOK == true) {
-              if(jsonResult.Data.content.length == 0) {
-                alert('더이상 없습니다.');
-                return;
-              }
-              $scope.pageIndex = jsonResult.Data.number + 1;
-              $scope.notices = jsonResult.Data.content;
-              console.log($scope.notices);
-            } else {
-              $scope.pageIndex = -1;
-            }
+    $scope.writeNotice = function() {
 
-            if($scope.pageIndex != -1) {
-              $scope.pages = new Array();
-              var pageDivide = Math.floor(index / PAGE_SIZE);
-              for(var i = 0 ; i < 5 ; i++) {
-                var pageCount = pageDivide * PAGE_SIZE + i;
-                $scope.pages.push(pageCount + 1);
-              }
-            }
-          } else {
-            alert('인증에 문제가 발생했습니다.');
-          }
-        })
-    };
+    }
 
     $scope.showNotice = function(notice) {
       showOrHideNotice("show", notice);
@@ -61,11 +33,52 @@ angular.module('publicWebApp')
 
     $scope.showEditNoticeModal = function(notice) {
       $scope.selectedNotice = notice;
-      $('#myModalLabel').html(notice.title);
-      $('#noticeContent').html(notice.content);
-      var noticeEditor = new nicEditor({ fullPanel: true }).panelInstance('noticeContent', { hasPanel: true });
+      $scope.modalTitle = notice.title;
+      $scope.modalTop = notice.top;
+
+      var nicEditor = nicEditors.findEditor('noticeContent');
+      nicEditor.setContent(notice.content);
       $('#noticeModal').modal();
-      //var editor = new nicEditor({ fullPanel: true }).panelInstance('noticeContent', { hasPanel: true });
+    };
+
+    $scope.showWriteNoticeModal = function() {
+      $scope.selectedNotice = null;
+      $scope.modalTitle = '';
+      $scope.modalTop = false;
+      var nicEditor = nicEditors.findEditor('noticeContent');
+      nicEditor.setContent('');
+
+      $('#noticeModal').modal();
+    };
+
+    $scope.writeOrEdit = function() {
+      var url = "/api/admin/notice/edit";
+      console.log('step01');
+      var nicEditor = nicEditors.findEditor('noticeContent');
+      console.log(nicEditor);
+      var config = {
+        withCredentials: true
+      };
+      var params = {};
+      params.title = $scope.modalTitle;
+      params.top = $scope.modalTop;
+      params.content = nicEditor.getContent();
+
+      if($scope.selectedNotice == null) {
+        url = "/api/admin/notice/write";
+        $scope.pageIndex = 1;
+      } else {
+        url = "/api/admin/notice/edit";
+        params.noticeId = $scope.selectedNotice.id;
+      }
+
+      $q.all($http.post(baseUrl + url, jQuery.param(params), config))
+        .then(function(httpResult){
+          if(httpResult.status == 200) {
+            $scope.loadItems($scope.pageIndex - 1);
+            $('#noticeModal').modal('hide');
+          }
+        });
     };
 
     var showOrHideNotice = function(path, notice) {
@@ -79,9 +92,9 @@ angular.module('publicWebApp')
         .then(function(httpResult){
           if(httpResult.status == 200 && httpResult.data.IsOK) {
             var updatedNotice = httpResult.data.Data;
-            for(var i = 0 ; i < $scope.notices.length ; i++) {
-              if($scope.notices[i].id == updatedNotice.id) {
-                $scope.notices[i] = updatedNotice;
+            for(var i = 0 ; i < $scope.pageItems.length ; i++) {
+              if($scope.pageItems[i].id == updatedNotice.id) {
+                $scope.pageItems[i] = updatedNotice;
                 break;
               }
             }
@@ -90,6 +103,10 @@ angular.module('publicWebApp')
           }
         });
     }
+
     authService.checkLogin($scope);
-    $scope.loadNotices(0);
+    pageList.init($scope, '/api/admin/notice/list', PAGE_SIZE);
+    $scope.loadItems(0);
+
+    new nicEditor({ fullPanel: true }).panelInstance('noticeContent', { hasPanel: true });
   });
