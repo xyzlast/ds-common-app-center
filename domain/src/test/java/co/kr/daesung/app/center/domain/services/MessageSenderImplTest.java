@@ -86,6 +86,4 @@ public class MessageSenderImplTest {
             assertThat(message.isSent(), is(true));
         }
     }
-
-
 }

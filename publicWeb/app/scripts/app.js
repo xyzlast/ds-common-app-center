@@ -77,9 +77,13 @@ angular.module('publicWebApp', [
         templateUrl: 'views/apis/dataformat.html',
         controller: 'ApisDataformatCtrl'
       })
+      .when('/admin/crew', {
+        templateUrl: 'views/admin/crew.html',
+        controller: 'AdminCrewCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
   });
 
-var baseUrl = "http://localhost:8080/apiWeb"
+var baseUrl = "http://192.168.13.49:8080/apiWeb"

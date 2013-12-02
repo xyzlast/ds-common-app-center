@@ -34,9 +34,6 @@ public class LoginProcessHandler implements AuthenticationSuccessHandler, Authen
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         ResultData resultData = new ResultData("Login success");
         final PrintWriter writer = response.getWriter();
-//        response.addHeader("Access-Control-Allow-Origin", "*");
-//        response.addHeader("Access-Control-Allow-Methods", "'DELETE', 'PUT', 'GET', 'POST', 'OPTION'");
-//        response.addHeader("Access-Control-Max-Age", "1000");
         writer.write(objectMapper.writeValueAsString(resultData));
         writer.close();
     }
@@ -45,9 +42,6 @@ public class LoginProcessHandler implements AuthenticationSuccessHandler, Authen
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         ResultData resultData = new ResultData(exception);
         final PrintWriter writer = response.getWriter();
-//        response.addHeader("Access-Control-Allow-Origin", "*");
-//        response.addHeader("Access-Control-Allow-Methods", "'DELETE', 'PUT', 'GET', 'POST', 'OPTION'");
-//        response.addHeader("Access-Control-Max-Age", "1000");
         writer.write(objectMapper.writeValueAsString(resultData));
         writer.close();
     }

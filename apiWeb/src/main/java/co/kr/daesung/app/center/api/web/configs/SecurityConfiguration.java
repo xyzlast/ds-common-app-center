@@ -47,10 +47,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private CorsSupportLoginUrlAuthenticationEntryPoint corsEntryPoint;
 
+    /**
+     * Digiest Authentication을 위한 Return filter
+     * cors가 적용된 Digest 인증 필터로 교체
+     * @return
+     * @throws Exception
+     */
     @Bean
     public DigestAuthenticationFilter digestAuthenticationFilter() throws Exception {
         DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
-        digestAuthenticationFilter.setAuthenticationEntryPoint(digestAuthenticationEntryPoint());
+        digestAuthenticationFilter.setAuthenticationEntryPoint(corsEntryPoint);
         digestAuthenticationFilter.setUserDetailsService(userDetailsServiceBean());
         return digestAuthenticationFilter;
     }
@@ -67,16 +73,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper;
     }
-
-    @Bean
-    public DigestAuthenticationEntryPoint digestAuthenticationEntryPoint() {
-        DigestAuthenticationEntryPoint entryPoint = new DigestAuthenticationEntryPoint();
-        entryPoint.setRealmName("ykyoon");
-        entryPoint.setKey("xyzlast");
-        entryPoint.setNonceValiditySeconds(99999);
-        return entryPoint;
-    }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -98,12 +94,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
+    /**
+     * AuthenticationManager를 LoginController에서 사용하기 위해서는 반드시, @Bean으로 등록되어야지 된다.
+     * @return
+     * @throws Exception
+     */
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
+    /**
+     * UserDetailService와 PasswordEncoder를 이용해서, AuthenticationProvider를 구성한다.
+     * @return
+     * @throws Exception
+     */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() throws Exception {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -112,6 +118,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return daoAuthenticationProvider;
     }
 
+    /**
+     * UserDetailsService를 구성해준다. Bean Name은 반드시 BeanIds.USER_DETAILS_SERVICE로 등록되어야지 된다.
+     * @return
+     * @throws Exception
+     */
     @Override
     @Bean(name = BeanIds.USER_DETAILS_SERVICE)
     public UserDetailsService userDetailsServiceBean() throws Exception {

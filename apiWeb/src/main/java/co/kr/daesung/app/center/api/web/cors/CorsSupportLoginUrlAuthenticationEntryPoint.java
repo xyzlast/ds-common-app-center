@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,8 +21,15 @@ import org.springframework.stereotype.Component;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public class CorsSupportLoginUrlAuthenticationEntryPoint implements
-        AuthenticationEntryPoint {
+public class CorsSupportLoginUrlAuthenticationEntryPoint
+        extends DigestAuthenticationEntryPoint
+        implements AuthenticationEntryPoint {
+
+    public CorsSupportLoginUrlAuthenticationEntryPoint() {
+        super.setRealmName("ykyoon");
+        super.setKey("xyzlast");
+        super.setNonceValiditySeconds(30);
+    }
 
     @Autowired
     private CorsHeaderApplier corsHeaderApplier;
@@ -32,7 +41,8 @@ public class CorsSupportLoginUrlAuthenticationEntryPoint implements
             corsHeaderApplier.applyCorsHeaders(request, response);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } else  {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+            corsHeaderApplier.applyCorsHeaders(request, response);
+            super.commence(request, response, authException);
         }
     }
 

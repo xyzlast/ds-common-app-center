@@ -160,10 +160,8 @@ public class ApiKeyServiceImplTest {
 
     @Test
     public void testAddTempPrograms() throws Exception {
-        String apiKeyId = "5136c2e7-a2c1-41b9-b687-dafb06d490e0";
-        ApiKey apiKey = service.getApiKey(apiKeyId);
         for(int i = 0 ; i < 10 ; i++) {
-            service.addProgramTo("ykyoon", apiKey, "TEST_PROGRAM_NAME", "DESCRIPTION");
+            service.addProgramTo(USER_ID, targetKey, "TEST_PROGRAM_NAME" + i, "DESCRIPTION");
         }
     }
 }

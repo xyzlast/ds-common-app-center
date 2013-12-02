@@ -85,8 +85,8 @@ public class ApiKeyControllerTest {
     @Test
     public void testGenerateKey() throws Exception {
         String digestAuthenticateion = AuthorizedControllerHelper
-                .buildDigestAuthenticateion(mvc, "ykyoon", "1234", ApiKeyController.API_API_KEY_GENERATE, "PUT");
-        MvcResult result = mvc.perform(put(ApiKeyController.API_API_KEY_GENERATE)
+                .buildDigestAuthenticateion(mvc, "ykyoon", "1234", ApiKeyController.API_API_KEY_GENERATE, "POST");
+        MvcResult result = mvc.perform(post(ApiKeyController.API_API_KEY_GENERATE)
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
@@ -98,8 +98,8 @@ public class ApiKeyControllerTest {
     @Test
     public void testDelteKey() throws Exception {
         String uri = ApiKeyController.API_API_KEY_DELETE;
-        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "DELETE");
-        MvcResult result = mvc.perform(delete(uri)
+        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "POST");
+        MvcResult result = mvc.perform(post(uri)
                 .param("apiKeyId", "ABC")
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
                 .andExpect(status().isOk())
@@ -124,7 +124,7 @@ public class ApiKeyControllerTest {
     @Test
     public void testAddProgram() throws Exception {
         String uri = ApiKeyController.API_API_KEY_PROGRAM_ADD;
-        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "PUT");
+        String digestAuthenticateion = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, "ykyoon", "1234", uri, "POST");
         MvcResult result = mvc.perform(post(uri)
                 .param("apiKeyId", apiKeyId)
                 .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuthenticateion))
