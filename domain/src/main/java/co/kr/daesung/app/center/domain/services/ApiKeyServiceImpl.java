@@ -1,11 +1,9 @@
 package co.kr.daesung.app.center.domain.services;
 
-import co.kr.daesung.app.center.domain.entities.auth.AcceptProgram;
-import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
-import co.kr.daesung.app.center.domain.entities.auth.QAcceptProgram;
-import co.kr.daesung.app.center.domain.entities.auth.QApiKey;
+import co.kr.daesung.app.center.domain.entities.auth.*;
 import co.kr.daesung.app.center.domain.repo.auth.AcceptProgramRepository;
 import co.kr.daesung.app.center.domain.repo.auth.ApiKeyRepository;
+import co.kr.daesung.app.center.domain.repo.auth.ApiMethodRepository;
 import co.kr.daesung.app.center.domain.utils.ArrayUtil;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private ApiKeyRepository apiKeyRepository;
     @Autowired
     private AcceptProgramRepository acceptProgramRepository;
+    @Autowired
+    private ApiMethodRepository apiMethodRepository;
 
     private static final String PERMISSION_NOT_MATCHED = "this user do not have this permission";
 
@@ -149,33 +149,40 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     @Transactional
-    public boolean isAcceptedKey(ApiKey apiKey, String program) {
+    public boolean isAcceptedKey(ApiKey apiKey, String program, String url) {
         QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
         Predicate predicate = qAcceptProgram.apiKey.eq(apiKey)
                 .and(qAcceptProgram.apiKey.deleted.isFalse())
                 .and(qAcceptProgram.program.eq(program))
                 .and(qAcceptProgram.deleted.isFalse());
 
+        QApiMethod qApiMethod = QApiMethod.apiMethod;
+        ApiMethod apiMethod = apiMethodRepository.findOne(qApiMethod.urls.like("%" + url + "%"));
+        if(apiMethod == null || !apiMethod.isEnabled()) {
+            return false;
+        }
+
         boolean isAccepted = acceptProgramRepository.count(predicate) == 1;
         if(isAccepted) {
             apiKey.setUsedCount(apiKey.getUsedCount() + 1);
             apiKeyRepository.save(apiKey);
-
             AcceptProgram acceptProgram = acceptProgramRepository.findOne(predicate);
             acceptProgram.increaseCallTime();
             acceptProgramRepository.save(acceptProgram);
+            apiMethod.increaseUsedCount();
+            apiMethodRepository.save(apiMethod);
         }
         return isAccepted;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isAcceptedKey(String apiKeyId, String program) {
+    public boolean isAcceptedKey(String apiKeyId, String program, String url) {
         ApiKey apiKey = apiKeyRepository.findOne(apiKeyId);
         if(apiKey == null || apiKey.isDeleted()) {
             return false;
         } else {
-            return isAcceptedKey(apiKey, program);
+            return isAcceptedKey(apiKey, program, url);
         }
     }
 

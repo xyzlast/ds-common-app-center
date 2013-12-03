@@ -17,6 +17,7 @@ import co.kr.daesung.app.center.api.web.configs.ControllerConfiguration;
 import co.kr.daesung.app.center.api.web.configs.SecurityConfiguration;
 import co.kr.daesung.app.center.api.web.vos.ResultData;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
+import co.kr.daesung.app.center.domain.entities.auth.ApiMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -60,7 +61,7 @@ public class MessageControllerTest {
 
     @Test
     public void getCrewMessageList() throws Exception {
-        String url = MessageController.API_MESSAGE_CREW_LIST;
+        String url = ApiMethod.API_MESSAGE_CREW_LIST;
         String digestAuth = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, USER_NAME, PASSWORD, url, "GET");
         MvcResult result = mvc.perform(get(url)
                                 .param("key", AUTH_KEY)
@@ -76,7 +77,7 @@ public class MessageControllerTest {
 
     @Test
     public void getNLeaderMessageList() throws Exception {
-        String url = MessageController.API_MESSAGE_NLEADER_LIST;
+        String url = ApiMethod.API_MESSAGE_NLEADER_LIST;
         String digestAuth = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, USER_NAME, PASSWORD, url, "GET");
         MvcResult result = mvc.perform(get(url)
                 .param("key", AUTH_KEY)

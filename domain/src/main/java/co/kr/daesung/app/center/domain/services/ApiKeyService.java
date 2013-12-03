@@ -25,8 +25,8 @@ public interface ApiKeyService {
     boolean removeProgramFrom(String userId, ApiKey apiKey, String programName) throws IllegalAccessException;
     boolean removeProgramFrom(String userId, int programId) throws IllegalAccessException;
     boolean removeProgramFrom(String userId, String apiKeyId, int[] programIds) throws IllegalAccessException;
-    boolean isAcceptedKey(ApiKey apiKey, String program);
-    boolean isAcceptedKey(String apiKeyId, String program);
+    boolean isAcceptedKey(ApiKey apiKey, String program, String url);
+    boolean isAcceptedKey(String apiKeyId, String program, String url);
 
     List<AcceptProgram> getAcceptPrograms(String apiKeyId);
     Page<ApiKey> getTopUsedApiKeys(int pageIndex, int pageSize);

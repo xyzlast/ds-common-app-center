@@ -3,6 +3,7 @@ package co.kr.daesung.app.center.domain.services;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import co.kr.daesung.app.center.domain.entities.auth.AcceptProgram;
 import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
+import co.kr.daesung.app.center.domain.entities.auth.ApiMethod;
 import co.kr.daesung.app.center.domain.entities.auth.QAcceptProgram;
 import co.kr.daesung.app.center.domain.repo.auth.AcceptProgramRepository;
 import com.mysema.query.types.Predicate;
@@ -101,10 +102,11 @@ public class ApiKeyServiceImplTest {
     }
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
+    @Rollback(false)
     public void testIsAcceptedKey1() throws Exception {
         addProgramTo();
-        boolean isAccepted = service.isAcceptedKey(targetKey, TEST_PROGRAMNAME);
+        boolean isAccepted = service.isAcceptedKey(targetKey, TEST_PROGRAMNAME, ApiMethod.API_ADDRESS_SEARCH_BY_BUILDING);
         assertThat(isAccepted, is(true));
         QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
         Predicate predicate = qAcceptProgram.apiKey.eq(targetKey)
@@ -115,15 +117,15 @@ public class ApiKeyServiceImplTest {
         AcceptProgram program = acceptProgramRepository.findOne(predicate);
         assertThat(program.getUsedCount(), is(1L));
 
-        boolean isNotAccepted = service.isAcceptedKey(targetKey, "WRONG_PROGRAMNAME");
+        boolean isNotAccepted = service.isAcceptedKey(targetKey, "WRONG_PROGRAMNAME", ApiMethod.API_ADDRESS_SEARCH_BY_BUILDING);
         assertThat(isNotAccepted, is(false));
     }
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     public void testIsAcceptedKey2() throws Exception {
         addProgramTo();
-        boolean isAccepted = service.isAcceptedKey(targetKey.getId(), TEST_PROGRAMNAME);
+        boolean isAccepted = service.isAcceptedKey(targetKey.getId(), TEST_PROGRAMNAME, ApiMethod.API_ADDRESS_SEARCH_BY_BUILDING);
         assertThat(isAccepted, is(true));
 
         QAcceptProgram qAcceptProgram = QAcceptProgram.acceptProgram;
@@ -134,7 +136,7 @@ public class ApiKeyServiceImplTest {
         AcceptProgram program = acceptProgramRepository.findOne(predicate);
         assertThat(program.getUsedCount(), is(1L));
 
-        boolean isNotAccepted = service.isAcceptedKey(targetKey, "WRONG_PROGRAMNAME");
+        boolean isNotAccepted = service.isAcceptedKey(targetKey, "WRONG_PROGRAMNAME", ApiMethod.API_ADDRESS_SEARCH_BY_BUILDING);
         assertThat(isNotAccepted, is(false));
     }
 

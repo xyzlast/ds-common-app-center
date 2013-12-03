@@ -17,6 +17,7 @@ import co.kr.daesung.app.center.api.web.configs.ControllerConfiguration;
 import co.kr.daesung.app.center.api.web.configs.SecurityConfiguration;
 import co.kr.daesung.app.center.api.web.vos.ResultData;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
+import co.kr.daesung.app.center.domain.entities.auth.ApiMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -55,7 +56,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testGetSiDoList() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SIDO_LIST)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SIDO_LIST)
                 .param("key", authKey)
                 .header("client", clientApp))
                 .andExpect(status().isOk())
@@ -67,7 +68,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByJibeonWithApplication() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SEARCH_BY_JIBEON)
                 .param("jibeonName", "신도림")
                 .param("mergeJibeon", "true")
                 .param("pageIndex", "0")
@@ -84,7 +85,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByJibeonWithHttpClient() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SEARCH_BY_JIBEON)
                 .param("jibeonName", "신도림")
                 .param("mergeJibeon", "true")
                 .param("pageIndex", "0")
@@ -102,7 +103,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByJibeonWithNoKey() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SEARCH_BY_JIBEON)
                                 .param("jibeonName", "신도림")
                                 .param("mergeJibeon", "true")
                                 .param("pageIndex", "0")
@@ -119,7 +120,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByJibeonUsingJsonpWithNoKey() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SEARCH_BY_JIBEON)
                 .param("jibeonName", "신도림")
                 .param("mergeJibeon", "true")
                 .param("pageIndex", "0")
@@ -133,7 +134,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByRoad() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SEARCH_BY_ROAD)
                 .param("roadName", "지봉로")
                 .param("sidoNumber", "11")
                 .param("merge", "true")
@@ -151,7 +152,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testSearchByBuildingName() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SEARCH)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SEARCH_BY_BUILDING)
                 .param("sidoNumber", "11")
                 .param("buildingName", "푸르지오")
                 .param("pageIndex", "0")
@@ -168,7 +169,7 @@ public class AddressSearchControllerTest {
 
     @Test
     public void testGetSiGunGuList() throws Exception {
-        MvcResult result = mvc.perform(get(AddressSearchController.API_ADDRESS_SIGUNGU_LIST)
+        MvcResult result = mvc.perform(get(ApiMethod.API_ADDRESS_SIGUNGU_LIST)
                 .param("sidoNumber", "11")
                 .param("key", authKey)
                 .header("client", clientApp))

@@ -25,6 +25,10 @@ import java.util.regex.Pattern;
 @Aspect
 @Component
 public class ApiKeyRequiredAdvice implements Ordered {
+    public static final String CLIENT = "client";
+    public static final String ORIGIN = "Origin";
+    public static final String HTTP_URL_HTTPS_DA_Z = "(?<httpUrl>((https?:\\/\\/)([\\da-z\\.-]+)))\\/?";
+    public static final String HTTP_URL = "httpUrl";
     @Autowired
     private ApiKeyService service;
     public static final String TEST_KEY = "02906f80-9fab-4208-a9b0-e031b6a7cfca";
@@ -41,9 +45,10 @@ public class ApiKeyRequiredAdvice implements Ordered {
         if(arguments.length >= 2 && arguments[0] instanceof HttpServletRequest &&
             arguments[1] instanceof HttpServletResponse) {
             HttpServletRequest request = (HttpServletRequest) arguments[0];
-            String headerClient = request.getHeader("client");
+            String uri = request.getRequestURI().substring(request.getContextPath().length());
+            String headerClient = request.getHeader(CLIENT);
             if(headerClient == null || headerClient.equals("")) {
-                headerClient = request.getHeader("Referer");
+                headerClient = request.getHeader(ORIGIN);
             }
             final String[] keys = request.getParameterValues("key");
             if(keys != null && keys.length == 1) {
@@ -52,13 +57,13 @@ public class ApiKeyRequiredAdvice implements Ordered {
                     return pjp.proceed();
                 }
                 else if(headerClient != null && !headerClient.equals("")) {
-                    String patternString = "(?<httpUrl>((https?:\\/\\/)([\\da-z\\.-]+)))\\/?";
+                    String patternString = HTTP_URL_HTTPS_DA_Z;
                     Pattern pattern = Pattern.compile(patternString);
                     final Matcher matcher = pattern.matcher(headerClient);
                     if(matcher.find()) {
-                        headerClient = matcher.group("httpUrl");
+                        headerClient = matcher.group(HTTP_URL);
                     }
-                    if(service.isAcceptedKey(key, headerClient)) {
+                    if(service.isAcceptedKey(key, headerClient, uri)) {
                         return pjp.proceed();
                     }
                 }

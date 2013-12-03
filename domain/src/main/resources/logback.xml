@@ -2,9 +2,9 @@
 <configuration>
     <appender name="STDOUT"
               class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%-4relative [%thread] %-5level %class - %msg%n</pattern>
-        </layout>
+        </encoder>
     </appender>
 
     <!--Basic file appender<appender name="FILE"
@@ -21,10 +21,9 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>logFile.%d{yyyy-MM-dd}.log</FileNamePattern>
         </rollingPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
-        </layout>
+        </encoder>
     </appender>
 
 
