@@ -1,5 +1,7 @@
 package co.kr.daesung.app.center.api.web.ws;
 
+import javax.jws.WebService;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ykyoon
@@ -7,5 +9,11 @@ package co.kr.daesung.app.center.api.web.ws;
  * Time: 4:52 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HelloWorldImpl {
+@WebService(endpointInterface = "co.kr.daesung.app.center.api.web.ws.HelloWorld")
+public class HelloWorldImpl implements HelloWorld {
+    @Override
+    public String sayHi(String name) {
+        System.out.println("SayHi..");
+        return "Hello " + name;
+    }
 }

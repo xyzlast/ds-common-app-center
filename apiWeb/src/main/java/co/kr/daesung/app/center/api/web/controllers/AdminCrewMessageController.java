@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class AdminCrewMessageController {
+    public static final String API_ADMIN_CREW_LIST = "/api/admin/crew/list";
     @Autowired
     private MessageService messageService;
 
-    @RequestMapping(value = "/api/admin/crew/list", method = RequestMethod.GET)
+    @RequestMapping(value = API_ADMIN_CREW_LIST, method = RequestMethod.GET)
     @ResponseBody
     @ResultDataFormat
     public Object getCrewMessages(int pageIndex, int pageSize) {

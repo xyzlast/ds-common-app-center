@@ -9,4 +9,9 @@ dependencies {
     compile 'org.aspectj:aspectjweaver:1.7.4'
     compile 'org.springframework.security:spring-security-web:3.2.0.RC2'
     compile 'org.springframework.security:spring-security-config:3.2.0.RC2'
+    compile 'org.apache.cxf:cxf-api:2.7.7'
+    compile 'org.apache.cxf:cxf-rt-transports-http:2.7.7'
+    compile 'org.apache.cxf:cxf-rt-frontend-jaxws:2.7.7'
+    compile 'org.apache.cxf:cxf-rt-bindings-soap:2.7.7'
+
 }

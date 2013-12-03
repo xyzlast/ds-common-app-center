@@ -6,11 +6,13 @@ import co.kr.daesung.app.center.api.web.cors.CorsSupportLoginUrlAuthenticationEn
 import co.kr.daesung.app.center.domain.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.cxf.transport.servlet.CXFServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +40,7 @@ import javax.servlet.Filter;
 @Configuration
 @Slf4j
 @ComponentScan("co.kr.daesung.app.center.api.web.cors")
+@ImportResource(value = "classpath:cxf-servlet.xml")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public static final String CORS_SUPPORT_FILTER = "corsSupportFilter";
     public static final String ADMIN_ROLE = "ADMIN";
