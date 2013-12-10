@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.Matchers.*;
@@ -60,14 +61,56 @@ public class MessageControllerTest {
     }
 
     @Test
+    public void addCrewMessage() throws Exception {
+        addCrewMessage(ApiMethod.API_MESSAGE_SEND_CREW);
+        addCrewMessage(ApiMethod.API_MESSAGE_SEND_CREW_OLD);
+    }
+
+    private void addCrewMessage(String url) throws Exception {
+        MockHttpServletRequestBuilder request = post(url)
+                .param("key", AUTH_KEY)
+                .param("fromUser", "201105010")
+                .param("toUser", "201105010")
+                .param("message", "Crew Message")
+                .param("linkUrl", "http://www.daum.net")
+                .param("force", Boolean.FALSE.toString())
+                .header("Origin", "http://github.com");
+        MvcResult mvcResult = mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk()).andReturn();
+        ResultData r = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResultData.class);
+        assertThat(r.getMessage(), r.isOk(), is(true));
+    }
+
+    @Test
+    public void addNLeaderMessage() throws Exception {
+        addNLeaderMessage(ApiMethod.API_MESSAGE_SEND_NLEADER);
+        addNLeaderMessage(ApiMethod.API_MESSAGE_SEND_NLEADER_OLD);
+    }
+
+    private void addNLeaderMessage(String url) throws Exception {
+        MockHttpServletRequestBuilder request = post(url)
+                .param("key", AUTH_KEY)
+                .param("fromUser", "201105010")
+                .param("toUser", "201105010")
+                .param("title", "TITLE")
+                .param("content", "http://www.daum.net")
+                .param("force", Boolean.FALSE.toString())
+                .header("Origin", "http://github.com");
+        MvcResult mvcResult = mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk()).andReturn();
+        ResultData r = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResultData.class);
+        assertThat(r.getMessage(), r.isOk(), is(true));
+    }
+
+    @Test
     public void getCrewMessageList() throws Exception {
         String url = ApiMethod.API_MESSAGE_CREW_LIST;
-        String digestAuth = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, USER_NAME, PASSWORD, url, "GET");
         MvcResult result = mvc.perform(get(url)
                                 .param("key", AUTH_KEY)
                                 .param("pageIndex", "0")
-                                .param("pageSize", "100")
-                                .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuth))
+                                .param("pageSize", "100"))
                             .andDo(print())
                             .andExpect(status().isOk())
                             .andReturn();
@@ -78,12 +121,10 @@ public class MessageControllerTest {
     @Test
     public void getNLeaderMessageList() throws Exception {
         String url = ApiMethod.API_MESSAGE_NLEADER_LIST;
-        String digestAuth = AuthorizedControllerHelper.buildDigestAuthenticateion(mvc, USER_NAME, PASSWORD, url, "GET");
         MvcResult result = mvc.perform(get(url)
                 .param("key", AUTH_KEY)
                 .param("pageIndex", "0")
-                .param("pageSize", "100")
-                .header(AuthorizedControllerHelper.AUTH_HEADER, digestAuth))
+                .param("pageSize", "100"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();

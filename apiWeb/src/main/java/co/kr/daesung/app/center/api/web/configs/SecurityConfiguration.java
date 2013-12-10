@@ -86,7 +86,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/admin/**").hasRole(ADMIN_ROLE)
                 .antMatchers("/api/apiKey/**").authenticated()
-                .antMatchers("/api/message/**").authenticated()
                 .antMatchers("/api/auth/**").authenticated()
             .and()
                 .addFilterAfter(digestAuthenticationFilter(), BasicAuthenticationFilter.class);

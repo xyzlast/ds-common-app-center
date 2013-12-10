@@ -13,7 +13,6 @@ import javax.jws.WebService;
 public class HelloWorldImpl implements HelloWorld {
     @Override
     public String sayHi(String name) {
-        System.out.println("SayHi..");
         return "Hello " + name;
     }
 }

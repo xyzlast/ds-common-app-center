@@ -36,10 +36,10 @@ public class WebXmlInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        super.onStartup(servletContext);
         ServletRegistration.Dynamic cxf = servletContext.addServlet("CXFServlet", CXFServlet.class);
         cxf.addMapping("/ws/*");
         cxf.setLoadOnStartup(1);
+        super.onStartup(servletContext);
     }
 
     @Override

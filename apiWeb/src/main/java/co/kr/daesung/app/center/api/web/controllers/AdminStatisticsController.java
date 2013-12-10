@@ -6,6 +6,7 @@ import co.kr.daesung.app.center.api.web.vos.ApiKeyItem;
 import co.kr.daesung.app.center.domain.entities.auth.AcceptProgram;
 import co.kr.daesung.app.center.domain.entities.auth.ApiKey;
 import co.kr.daesung.app.center.domain.services.ApiKeyService;
+import co.kr.daesung.app.center.domain.services.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -26,28 +27,41 @@ import java.util.List;
 @Controller
 public class AdminStatisticsController {
 
+    public static final String API_ADMIN_STATISTICS_API = "/api/admin/statistics/api";
+    public static final String API_ADMIN_STATISTICS_PROGRAMS = "/api/admin/statistics/program";
+    public static final String API_ADMIN_STATISTICS_API_KEY = "/api/admin/statistics/apiKey";
+
     @Autowired
     private ApiKeyService apiKeyService;
+    @Autowired
+    private StatisticsService statisticsService;
 
-    @RequestMapping(value = "/api/admin/statistics/apiKey", method = RequestMethod.GET)
+    @RequestMapping(value = API_ADMIN_STATISTICS_API, method = RequestMethod.GET)
     @ResultDataFormat
     @ResponseBody
-    public Object getTopUsedApiKeys(int pageIndex, int pageSize) {
-        Page<ApiKey> topUsedApiKeys = apiKeyService.getTopUsedApiKeys(pageIndex, pageSize);
+    public Object getStatisticsForApiMethods() {
+        return statisticsService.sortApiMethodsByUsedCount();
+    }
+
+    @RequestMapping(value = API_ADMIN_STATISTICS_API_KEY, method = RequestMethod.GET)
+    @ResultDataFormat
+    @ResponseBody
+    public Object getTopUsedApiKeys(int limit) {
+        List<ApiKey> apiKeys = statisticsService.sortApiKeysByUsedCount(limit);
         List<ApiKeyItem> result = new ArrayList<>();
-        for(ApiKey apiKey : topUsedApiKeys) {
+        for(ApiKey apiKey : apiKeys) {
             result.add(new ApiKeyItem(apiKey, apiKeyService.getAcceptPrograms(apiKey.getId())));
         }
         return result;
     }
 
-    @RequestMapping(value = "/api/admin/statistics/programs", method = RequestMethod.GET)
+    @RequestMapping(value = API_ADMIN_STATISTICS_PROGRAMS, method = RequestMethod.GET)
     @ResultDataFormat
     @ResponseBody
-    public Object getTopUsedPrograms(int pageIndex, int pageSize) {
-        final Page<AcceptProgram> topUsedPrograms = apiKeyService.getTopUsedPrograms(pageIndex, pageSize);
+    public Object getTopUsedPrograms(int limit) {
+        List<AcceptProgram> acceptPrograms = statisticsService.sortAcceptProgramsByUsedCount(limit);
         List<AcceptProgramItem> result = new ArrayList<>();
-        for(AcceptProgram program : topUsedPrograms) {
+        for(AcceptProgram program : acceptPrograms) {
             result.add(new AcceptProgramItem(program));
         }
         return result;

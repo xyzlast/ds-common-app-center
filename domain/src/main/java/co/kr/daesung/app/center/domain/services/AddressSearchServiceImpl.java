@@ -48,6 +48,8 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class AddressSearchServiceImpl implements AddressSearchService {
+    public static final int BUILDINGNAME_LENGTH_LIMIT = 3;
+    public static final String BUILDING_NAME_IS_TOO_SHORT = "BuildingName is too short!";
     @Autowired
     private SiDoRepository siDoRepository;
     @Autowired
@@ -218,6 +220,9 @@ public class AddressSearchServiceImpl implements AddressSearchService {
 
     @Override
     public List<BaseAddress> searchByBuilding(String buildingName) {
+        if(buildingName.length() < BUILDINGNAME_LENGTH_LIMIT) {
+            throw new IllegalArgumentException(BUILDING_NAME_IS_TOO_SHORT);
+        }
         List<BaseAddress> addresses = new ArrayList<>();
         for(SidoEnum sido : SidoEnum.values()) {
             String sidoNumber = Integer.valueOf(sido.getValue()).toString();
@@ -228,6 +233,9 @@ public class AddressSearchServiceImpl implements AddressSearchService {
 
     @Override
     public List<BaseAddress> searchByBuilding(String sidoNumber, String buildingName, int pageIndex, int pageSize) {
+        if(buildingName.length() < BUILDINGNAME_LENGTH_LIMIT) {
+            throw new IllegalArgumentException(BUILDING_NAME_IS_TOO_SHORT);
+        }
         BaseCityRepository repository = getBaseCityRepository(sidoNumber);
         PageRequest pageRequest = new PageRequest(pageIndex, pageSize);
         Predicate predicate = AddressServicePredicates.getPredicateForSearchByBuilding(sidoNumber, buildingName);

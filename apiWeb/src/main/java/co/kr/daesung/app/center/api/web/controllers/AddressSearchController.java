@@ -89,7 +89,7 @@ public class AddressSearchController {
         return convertBaseAddressesToSearchAddressResults(addresses, false);
     }
 
-    @RequestMapping(value = {ApiMethod.API_ADDRESS_SIGUNGU_LIST, ApiMethod.API_ADDRESS_GET_SI_GUN_GU_LIST_OLD})
+    @RequestMapping(value = {ApiMethod.API_ADDRESS_SIGUNGU_LIST, ApiMethod.API_ADDRESS_SIGUNGU_LIST_OLD})
     @ResponseBody
     @ResultDataFormat
     @Jsonp

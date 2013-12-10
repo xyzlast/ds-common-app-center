@@ -36,6 +36,10 @@ public enum SidoEnum {
         return value;
     }
 
+    public String getStringValue() {
+        return Integer.valueOf(value).toString();
+    }
+
     public static SidoEnum getEnum(String sidoNumber) {
         Integer intValue = Integer.parseInt(sidoNumber);
         switch(intValue) {
