@@ -1,4 +1,4 @@
-package co.kr.daesung.app.center.api.web.controllers;
+package co.kr.daesung.app.center.api.web.controllers.apis;
 
 import co.kr.daesung.app.center.api.web.aops.ApiKeyRequired;
 import co.kr.daesung.app.center.api.web.aops.Jsonp;

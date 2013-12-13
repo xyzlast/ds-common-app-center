@@ -1,4 +1,4 @@
-package co.kr.daesung.app.center.api.web.controllers;
+package co.kr.daesung.app.center.api.web.controllers.apis;
 
 /**
  * Created with IntelliJ IDEA.

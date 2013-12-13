@@ -1,4 +1,4 @@
-package co.kr.daesung.app.center.api.web.controllers;
+package co.kr.daesung.app.center.api.web.controllers.apis;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 import co.kr.daesung.app.center.api.web.aops.ApiKeyRequiredAdvice;
 import co.kr.daesung.app.center.api.web.configs.ControllerConfiguration;
 import co.kr.daesung.app.center.api.web.configs.SecurityConfiguration;
+import co.kr.daesung.app.center.api.web.controllers.AuthorizedControllerHelper;
 import co.kr.daesung.app.center.api.web.vos.ResultData;
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration;
 import co.kr.daesung.app.center.domain.entities.auth.ApiMethod;

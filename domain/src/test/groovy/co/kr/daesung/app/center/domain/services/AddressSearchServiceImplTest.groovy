@@ -2,20 +2,22 @@ package co.kr.daesung.app.center.domain.services
 
 import co.kr.daesung.app.center.domain.configs.DomainConfiguration
 import co.kr.daesung.app.center.domain.constants.SidoEnum
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.test.context.ContextConfiguration
 import spock.lang.Shared
 import spock.lang.Specification
 
 /**
  * Created by ykyoon on 12/11/13.
  */
+@ContextConfiguration(classes = [ DomainConfiguration ])
 class AddressSearchServiceImplTest extends Specification {
-    @Shared
-    def context = new AnnotationConfigApplicationContext(DomainConfiguration)
+    @Autowired
     AddressSearchService service;
 
     def setup() {
-        service = context.getBean(AddressSearchService)
+
     }
 
     def "시, 도 리스트 얻어오기"() {
@@ -30,9 +32,8 @@ class AddressSearchServiceImplTest extends Specification {
         when:
         def searchResults = service.searchByBuilding(buildingName)
         then:
-        searchResults.each { r ->
+        searchResults.every { r->
             r.buildingName.contains(buildingName) == true
-            System.console().println(r.buildingName)
         }
     }
 
@@ -41,7 +42,7 @@ class AddressSearchServiceImplTest extends Specification {
         when:
         def searchResults = service.searchByRoad("11", roadName, true, 0, 100)
         then: '도로명은 모두 #roadName을 포함하고 있어야지 된다.'
-        searchResults.each { r->
+        searchResults.every { r->
             r.road.roadName.contains(roadName) == true
         }
     }
@@ -51,7 +52,7 @@ class AddressSearchServiceImplTest extends Specification {
         when:
         def roads = service.getRoadNumbers(roadName);
         then:
-        roads.each { r ->
+        roads.every { r ->
            r.roadName.contains(roadName) == true
         }
     }
@@ -70,7 +71,7 @@ class AddressSearchServiceImplTest extends Specification {
         when:
         def searchResults = service.searchByBuilding(SidoEnum.SEOUL.getStringValue(), buildingName, 0, 10)
         then:
-        searchResults.each { r ->
+        searchResults.every { r ->
             r.buildingName.contains(buildingName)
             r.siGunGu.sido.sidoNumber.equals(SidoEnum.SEOUL.getStringValue()) == true
         }
@@ -81,7 +82,7 @@ class AddressSearchServiceImplTest extends Specification {
         when:
         def searchResults = service.searchByJibeon(jibeonName, true, 0, 100)
         then:
-        searchResults.each { r->
+        searchResults.every { r->
             r.toJibeonAddress(true).contains(jibeonName) == true
         }
     }

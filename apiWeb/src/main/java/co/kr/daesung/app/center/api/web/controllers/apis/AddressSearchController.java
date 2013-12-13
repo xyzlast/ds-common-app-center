@@ -1,4 +1,4 @@
-package co.kr.daesung.app.center.api.web.controllers;
+package co.kr.daesung.app.center.api.web.controllers.apis;
 
 import co.kr.daesung.app.center.api.web.aops.ApiKeyRequired;
 import co.kr.daesung.app.center.api.web.aops.Jsonp;
@@ -10,9 +10,8 @@ import co.kr.daesung.app.center.domain.entities.address.support.BaseAddress;
 import co.kr.daesung.app.center.domain.entities.auth.ApiMethod;
 import co.kr.daesung.app.center.domain.services.AddressSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,13 +28,12 @@ import java.util.Map;
  * Time: 1:13 AM
  * To change this template use File | Settings | File Templates.
  */
-@Controller
+@RestController
 public class AddressSearchController {
     @Autowired
     private AddressSearchService service;
 
     @RequestMapping(value = {ApiMethod.API_ADDRESS_SIDO_LIST, ApiMethod.API_ADDRESS_SIDO_LIST_OLD})
-    @ResponseBody
     @ResultDataFormat
     @Jsonp
     @ApiKeyRequired
@@ -53,7 +51,6 @@ public class AddressSearchController {
 
 
     @RequestMapping(value = {ApiMethod.API_ADDRESS_SEARCH_BY_JIBEON, ApiMethod.API_ADDRESS_SEARCH_BY_JIBEON_OLD})
-    @ResponseBody
     @ResultDataFormat
     @Jsonp
     @ApiKeyRequired
@@ -65,7 +62,6 @@ public class AddressSearchController {
     }
 
     @RequestMapping(value = {ApiMethod.API_ADDRESS_SEARCH_BY_ROAD, ApiMethod.API_ADDRESS_SEARCH_BY_ROAD_OLD})
-    @ResponseBody
     @ResultDataFormat
     @Jsonp
     @ApiKeyRequired
@@ -76,7 +72,6 @@ public class AddressSearchController {
     }
 
     @RequestMapping(value = {ApiMethod.API_ADDRESS_SEARCH_BY_BUILDING, ApiMethod.API_ADDRESS_SEARCH_BY_BUILDING_OLD})
-    @ResponseBody
     @ResultDataFormat
     @Jsonp
     @ApiKeyRequired
@@ -90,7 +85,6 @@ public class AddressSearchController {
     }
 
     @RequestMapping(value = {ApiMethod.API_ADDRESS_SIGUNGU_LIST, ApiMethod.API_ADDRESS_SIGUNGU_LIST_OLD})
-    @ResponseBody
     @ResultDataFormat
     @Jsonp
     @ApiKeyRequired

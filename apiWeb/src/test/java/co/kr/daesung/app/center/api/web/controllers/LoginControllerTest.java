@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { DomainConfiguration.class, SecurityConfiguration.class, ControllerConfiguration.class })
 @WebAppConfiguration
-public class LoginControllerTest {
+class LoginControllerTest2 {
     @Autowired
     private WebApplicationContext context;
     private MockMvc mvc;

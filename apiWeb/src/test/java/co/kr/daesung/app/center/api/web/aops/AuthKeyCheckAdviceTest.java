@@ -35,7 +35,6 @@ public class AuthKeyCheckAdviceTest {
     public void getHttpPattern() {
         // String patternString = "(?<httpUrl>((https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*))\\/?";
         String patternString = "(?<httpUrl>((https?:\\/\\/)([\\da-z\\.-]+)))\\/?";
-        System.out.println(patternString);
         Pattern pattern = Pattern.compile(patternString);
 
         String sample1 = "http://stackoverflow.com/questions/415580/regex-named-groups-in-java";

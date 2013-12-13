@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SuppressWarnings("unused")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { DomainConfiguration.class })
-public class NoticeServiceImplTest {
+class NoticeServiceImplTest2 {
     @Autowired
     private NoticeService noticeService;
 

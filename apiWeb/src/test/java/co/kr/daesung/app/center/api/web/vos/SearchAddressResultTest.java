@@ -15,8 +15,7 @@ import static org.junit.Assert.*;
 import org.junit.*;
 
 import static org.mockito.Mockito.*;
-
-public class SearchAddressResultTest {
+class SearchAddressResultTest2 {
 
     private static final String JIBEON_ADDRESS_WITH_MERGE = "JIBEON_ADDRESS_1";
     private static final String JIBEON_ADDRESS = "JIBEON_ADDRESS_2";

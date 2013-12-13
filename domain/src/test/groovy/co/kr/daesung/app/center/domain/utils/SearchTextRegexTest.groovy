@@ -5,7 +5,7 @@ import spock.lang.Specification
 /**
  * Created by ykyoon on 12/11/13.
  */
-class SearchTextRegexTest2 extends Specification {
+class SearchTextRegexTest extends Specification {
 
     def "검색문자열 분리 테스트"() {
         expect:
